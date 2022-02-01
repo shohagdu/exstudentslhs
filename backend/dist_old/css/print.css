@@ -1,0 +1,112 @@
+body {
+    -webkit-print-color-adjust: exact;
+    overflow: hidden;
+}
+
+th.bg-blue {
+    background-color: #0073b7 !important;
+}
+
+th.bg-gray {
+    background-color: #d2d6de !important;
+}
+
+th.bg-aqua{
+    background-color: #00c0ef !important;
+}
+
+th.bg-green{
+    background-color: #00a65a !important;
+}
+
+th.bg-red{
+    background-color: #dd4b39 !important;
+}
+th.bg-navy {
+    background-color: #001f3f !important;
+}
+th.bg-title {
+    background-color: #88121b !important;
+    color:#fff !important;
+}
+
+h3.print_title{
+    margin: 0px!important;
+    padding: 4px 10px!important;
+    background-color: #c7d6de!important;
+    color: #000!important;
+    font-size: 14px!important;
+    margin-top: 10px!important;
+}
+
+.prescription_footer{
+    background-color: #38be81!important;
+}
+.prescription_footer h3 i{
+    color: #fff!important;
+}
+
+.top_section{
+  background: url(../../../uploads/logos/water_mark.png) center no-repeat!important;
+}
+
+.name_title h3{
+    margin: 0px !important;
+}
+.address h3{
+    margin: 0px !important;
+}
+
+
+
+th small{
+    color: #ffffff !important;
+}
+
+th .gray_bg_text{
+    color: #222 !important;
+}
+
+td.text-info {
+    color: #31708f !important;
+}
+
+td.text-success {
+    color: #3c763d !important;
+}
+td.text-danger {
+    color: #a94442 !important;
+}
+
+td strong.total_amu {
+    color: #31708f !important;
+}
+td strong.paid_amu {
+    color: #3c763d !important;
+}
+td strong.due_amu {
+    color: #a94442 !important;
+}
+.table td,
+.table th {
+    background-color: transparent!important;
+}
+
+.table-bordered>thead>tr>th,
+.table-bordered>tbody>tr>th,
+.table-bordered>tfoot>tr>th,
+.table-bordered>thead>tr>td,
+.table-bordered>tbody>tr>td,
+.table-bordered>tfoot>tr>td {
+    border: 1px dotted #c7d6de!important;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th {
+  padding: 2px !important;
+}
+

@@ -1,0 +1,246 @@
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
+}
+
+.mt-10 {
+    margin-top: 10px !important;
+}
+
+.mt-20 {
+    margin-top: 20px !important;
+}
+
+.mt-50 {
+    margin-top: 50px !important;
+}
+
+.ml-15 {
+    margin-left: 15px !important;
+}
+
+.mr-15 {
+    margin-right: 15px !important;
+}
+
+.pr-15 {
+    padding-right: 15px !important;
+}
+
+.pl-15 {
+    padding-left: 15px !important;
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+
+.pl-0 {
+    padding-left: 0 !important;
+}
+
+.pr-0 {
+    padding-right: 0 !important;
+}
+
+
+.bg-white {
+    background-color: #fff;
+}
+
+#product_details table tbody tr td a img,
+#stock table tbody tr td a img {
+    width: 30px;
+}
+
+#product_details table tbody tr td a i,
+#product_category table tbody tr td a i {
+    color: #fff;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    line-height: 30px;
+    background-color: #65319a;
+    border-radius: 50%;
+    font-size: 12px;
+    border: 1px solid #65319a;
+    transition: all 0.3s;
+}
+
+#product_details table tbody tr td a i:hover,
+#product_category table tbody tr td a i:hover {
+    color: #65319a;
+    background-color: transparent;
+}
+
+.pay_amount_due {
+    padding: 3px 5px;
+    background-color: #ff4b4b;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.pay_amount_paid {
+    padding: 3px 5px;
+    background-color: #1dd046;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.ready_stock {
+    padding: 3px 5px;
+    background-color: #1dd046;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.partially_ready_stock {
+    padding: 3px 5px;
+    background-color: #0b8fff;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.order_status_new {
+    padding: 3px 15px;
+    background-color: #0b8fff;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+    from {
+        text-shadow: 0 20px 0 #fff, 0 30px 0 #fff;
+    }
+
+    to {
+        text-shadow: 0 0 0 #fff, 0 0 0 #ff4da6, 0 0 0 #ff4da6, 0 0 0 #ff4da6, 0 0 0 #ff4da6, 0 0 0 #ff4da6, 0 0 0 #ff4da6;
+    }
+}
+
+.shipping_image {
+    padding: 30px;
+}
+
+.shipping_image img {
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+.imagePreview {
+    width: 100%;
+    height: 180px;
+    background-position: center center;
+    background: url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg) center center no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: inline-block;
+    box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    display: block;
+    border-radius: 0px;
+    box-shadow: 0px 4px 6px 2px rgba(0, 0, 0, 0.2);
+    margin-top: -5px;
+}
+
+.imgUp {
+    margin-bottom: 15px;
+}
+
+.del {
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    background-color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+.imgAdd {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #605ca8;
+    color: #fff;
+    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    line-height: 31px;
+    margin-top: 0px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 575.98px) {
+    .order_buttons {
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+    .shipping_image {
+        display: none;
+    }
+
+}
+
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order_buttons {
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .order_buttons {
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    ...
+}
+
+@media (min-width: 1200px) {
+    ...
+}
