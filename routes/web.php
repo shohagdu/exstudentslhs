@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserAccessController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DonationController;
 
 // accounting transaction controller
 use App\Http\Controllers\Admin\accounting_transaction\CapitalInvestment;
@@ -47,7 +48,6 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
 
     // accounting transaction
     Route::group(['prefix'=>'accounting_transaction'],function(){
-
         /* capital investment */
         Route::get('capital_investment' , [CapitalInvestment::class,'index'])->name('accounting_transaction.capital_investment');
         Route::get('capital_investment/create', [CapitalInvestment::class,'create'])->name('accounting_transaction.capital_investment.create');
@@ -56,7 +56,18 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
         Route::post('capital_investment/{id}', [CapitalInvestment::class, 'update'])->name('accounting_transaction.capital_investment.update');
         Route::get('capital_investment/{id}', [CapitalInvestment::class, 'show'])->name('accounting_transaction.capital_investment.show');
         Route::delete('capital_investment/{id}', [CapitalInvestment::class, 'destroy'])->name('accounting_transaction.capital_investment.delete');
+    });
 
+    // Donation
+    Route::group(['prefix'=>'donation'],function(){
+        /* capital investment */
+        Route::get('donationRecord' , [DonationController::class,'index'])->name('donation.donationRecord');
+//        Route::get('donation/create', [CapitalInvestment::class,'create'])->name('accounting_transaction.capital_investment.create');
+//        Route::post('capital_investment/store', [CapitalInvestment::class, 'store'])->name('accounting_transaction.capital_investment.store');
+//        Route::get('capital_investment/{id}/edit', [CapitalInvestment::class, 'edit'])->name('accounting_transaction.capital_investment.edit');
+//        Route::post('capital_investment/{id}', [CapitalInvestment::class, 'update'])->name('accounting_transaction.capital_investment.update');
+//        Route::get('capital_investment/{id}', [CapitalInvestment::class, 'show'])->name('accounting_transaction.capital_investment.show');
+//        Route::delete('capital_investment/{id}', [CapitalInvestment::class, 'destroy'])->name('accounting_transaction.capital_investment.delete');
     });
 
 

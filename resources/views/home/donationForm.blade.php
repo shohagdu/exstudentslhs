@@ -48,7 +48,7 @@
                     <div class="col-md-6">
                         <select class="form-control @error ('sscBatch') is-invalid @enderror" id="sscBatch" name="sscBatch">
                             <option value="">Select Batch</option>
-                            @for($i=2022;$i>=1962;$i--)
+                            @for($i=2021;$i>=1962;$i--)
                                 <option value="{{ $i }}" {{ ((!empty(old('sscBatch')) && (old('sscBatch')==$i))?"selected":'') }}>{{ $i
                                 }}</option>
                             @endfor
@@ -61,7 +61,25 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sendNumber" class="col-md-4 col-form-label text-md-right">Send Number</label>
+                    <label for="donationAmount" class="col-md-4 col-form-label text-md-right"></label>
+                    <div class="col-md-6 text-center ">
+                        <label><u>Donation Information</u></label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="donationAmount" class="col-md-4 col-form-label text-md-right">Donation Amount</label>
+                    <div class="col-md-6">
+                        <input id="donationAmount" placeholder="Enter Donation Amount" value="{{ old('donationAmount') }}" type="text"
+                               class="form-control @error('donationAmount') is-invalid @enderror" name="donationAmount">
+                        @error('donationAmount')
+                        <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="sendNumber" class="col-md-4 col-form-label text-md-right">Donation Send Number</label>
                     <div class="col-md-6">
                         <select class="form-control  @error ('sendNumber') is-invalid @enderror" id="sendNumber" name="sendNumber">
                             <option value="">Select Send Number</option>
@@ -79,7 +97,6 @@
                     <label for="donationBy" class="col-md-4 col-form-label text-md-right">Select Donation By</label>
                     <div class="col-md-6">
                         <select class="form-control @error ('donationBy') is-invalid @enderror" id="donationBy" name="donationBy">
-                            <option value="">Select Donation By</option>
                             <option value="2" {{ ((!empty(old('donationBy')) && (old('donationBy')==2))
                             ?"selected":'') }}>bKash</option>
                         </select>
@@ -104,19 +121,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label for="donationAmount" class="col-md-4 col-form-label text-md-right">Donation Amount</label>
-                    <div class="col-md-6">
-                        <input id="donationAmount" placeholder="Enter Donation Amount" value="{{ old('donationAmount') }}" type="text"
-                               class="form-control @error('donationAmount') is-invalid @enderror" name="donationAmount"
-                                >
-                        @error('donationAmount')
-                             <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
+
                 <div class="form-group row mb-0">
                     <div class="col-md-6 offset-md-4">
                         @if(Session::has('message'))
