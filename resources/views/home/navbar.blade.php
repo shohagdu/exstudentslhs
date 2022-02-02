@@ -13,10 +13,10 @@
                     <a class="nav-link" href="{{ url('/') }}">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About Us</a>
+                    <a class="nav-link" href="{{ url('/aboutUs') }}">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Donation Process</a>
+                    <a class="nav-link" href="{{ url('/donationProcess') }}">Donation Process</a>
                 </li>
 
             </ul>

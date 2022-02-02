@@ -22,20 +22,23 @@ class HomeController extends Controller
     public function index(){
         return view('home.donationForm');
     }
-    public function donationSuccess(){
-        //return view('home.donationSuccess');
+    public function aboutUs(){
+        return view('home.aboutUs');
+    }
+    public function donationProcess(){
+        return view('home.donationProcess');
     }
 
 
     public function donationFormAction(request $request){
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'mobileNumber' => ['required', 'string',  'max:11'],
-            'sscBatch' => ['required', 'string'],
-            'sendNumber' => ['required', 'string'],
-            'donationBy' => ['required', 'string'],
+            'name'              => ['required', 'string', 'max:255'],
+            'mobileNumber'      => ['required', 'string',  'max:11'],
+            'sscBatch'          => ['required'],
+            'sendNumber'        => ['required'],
+            'donationBy'        => ['required'],
 //            'TransactionID' => ['required', 'string'],
-            'donationAmount' => ['required', 'string'],
+            'donationAmount'    => ['required'],
         ]);
 
         if ($validator->fails()) {
@@ -45,7 +48,6 @@ class HomeController extends Controller
         }
 
         $data=[
-            'user_id'               => '',
             'name'                  => $request->name,
             'mobileNumber'          => $request->mobileNumber,
             'sscBatch'              => $request->sscBatch,
@@ -61,6 +63,7 @@ class HomeController extends Controller
         $userInfo=[
             'name'                  => $data['name'],
             'email'                 => $data['mobileNumber'],
+            'mobile'                => $data['mobileNumber'],
             'password'              => Hash::make(123456),
             'user_type'             => 4,
             'created_at'            => date('Y-m-d H:i:s'),
@@ -70,11 +73,11 @@ class HomeController extends Controller
 
         DB::beginTransaction();
         try {
-            User::create($userInfo);
+            $userInfo           =   User::create($userInfo);
+            $data['user_id']    =   $userInfo->id;
             DonarInfo::create($data);
             DB::commit();
-            $success_output = 'Thanks for this donation. ';
-
+            $success_output ="Dear {$data['name']}, Thank you for your great generosity! We, at 'Ex. Student Forum of Lemua High School',  greatly appreciate your donation. Your support helps to succeed our mission.";
             Session::flash('message', $success_output);
             return redirect('/');
         } catch (\Exception $e) {

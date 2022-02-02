@@ -14,9 +14,16 @@ class DonarInfo extends Authenticatable
     protected $table = 'donarinfos';
 
     protected $fillable = [
+        'user_id',
         'name',
         'mobileNumber',
         'sscBatch',
+        'sendNumber',
+        'donationBy',
+        'TransactionID',
+        'donationAmount',
+        'created_by',
+        'created_ip',
     ];
 
 

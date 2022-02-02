@@ -30,9 +30,11 @@ Route::group(['prefix' => 'admin'], function () {
     Auth::routes();
 });
 
-Route::get('/home' , [HomeController::class,'index']);
 Route::get('/' , [HomeController::class,'index']);
-Route::get('/donationSuccess' , [HomeController::class,'donationSuccess'])->name('donationSuccess');
+Route::get('/home' , [HomeController::class,'index']);
+Route::get('/aboutUs' , [HomeController::class,'aboutUs']);
+Route::get('/donationProcess' , [HomeController::class,'donationProcess']);
+
 Route::post('/donationFormAction' , [HomeController::class,'donationFormAction'])->name('donationFormAction');
 
 Route::any('/admin', function(){
