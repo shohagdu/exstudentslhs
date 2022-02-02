@@ -27,21 +27,17 @@ use App\Http\Controllers\Admin\accounting_transaction\CapitalInvestment;
 */
 // Auth::routes();
 Route::group(['prefix' => 'admin'], function () {
-
     Auth::routes();
-
 });
 
+Route::get('/home' , [HomeController::class,'index']);
 Route::get('/' , [HomeController::class,'index']);
+Route::get('/donationSuccess' , [HomeController::class,'donationSuccess'])->name('donationSuccess');
+Route::post('/donationFormAction' , [HomeController::class,'donationFormAction'])->name('donationFormAction');
 
-//Route::any('/', function(){
-//    return redirect()->route('admin.dashboard');
-//});
-
-Route::get('/admin/', function(){
+Route::any('/admin', function(){
     return redirect()->route('admin.dashboard');
 });
-
 
 Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], function() {
 
