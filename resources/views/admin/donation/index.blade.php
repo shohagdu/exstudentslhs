@@ -47,7 +47,7 @@
                                     <th>Transaction ID </th>
                                     <th>Amount </th>
                                     <th>Created At</th>
-                                    <th style="width: 8%"></th>
+                                    <th style="width: 10%"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
