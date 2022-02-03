@@ -35,7 +35,6 @@ Route::get('/' , [HomeController::class,'index']);
 Route::get('/home' , [HomeController::class,'index']);
 Route::get('/aboutUs' , [HomeController::class,'aboutUs']);
 Route::get('/donationProcess' , [HomeController::class,'donationProcess']);
-
 Route::post('/donationFormAction' , [HomeController::class,'donationFormAction'])->name('donationFormAction');
 
 Route::any('/admin', function(){
