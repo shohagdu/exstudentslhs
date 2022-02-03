@@ -8,7 +8,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
+    <script>
+        var base_url = '<?php echo url('admin/');?>';
+    </script>
 @yield('meta')
 
 <!----------------- new ------------------>
@@ -64,7 +66,7 @@
 {{--    <link rel="stylesheet" href="{{ URL::asset('backend/dist/css/AdminLTE.min.css') }}">--}}
 <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{{ URL::asset('backend/dist/css/skins/_all-skins.min.css') }}">
+{{--    <link rel="stylesheet" href="{{ asset('backend/dist/css/skins/all-skins.min.css') }}">--}}
     <!-- Morris chart -->
 {{--    <link rel="stylesheet" href="{{ URL::asset('backend/bower_components/morris.js/morris.css') }}">--}}
 
@@ -79,7 +81,7 @@
     <![endif]-->
 
     {{-- jquery validator --}}
-    <link rel="stylesheet" href="{{ asset('backend/plugins/validate/validate.css') }}">
+{{--    <link rel="stylesheet" href="{{ asset('backend/plugins/validate/validate.css') }}">--}}
 
     <!-- DataTables -->
 {{--    <link rel="stylesheet" href="{{ asset('backend/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">--}}
@@ -184,15 +186,15 @@
 <!-- Sparkline -->
 {{--<script src="{{ URL::asset('backend/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js') }}"></script>--}}
 <!-- jvectormap -->
-<script src="{{ URL::asset('backend/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-<script src="{{ URL::asset('backend/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
+{{--<script src="{{ URL::asset('backend/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>--}}
+{{--<script src="{{ asset('backend/plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>--}}
 <!-- jQuery Knob Chart -->
 {{--<script src="{{ URL::asset('backend/bower_components/jquery-knob/dist/jquery.knob.min.js') }}"></script>--}}
 {{--<script src="{{ URL::asset('backend/bower_components/bootstrap-daterangepicker/daterangepicker.js') }}"></script>--}}
 <!-- datepicker -->
 {{--<script src="{{ URL::asset('backend/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>--}}
 <!-- Bootstrap WYSIHTML5 -->
-<script src="{{ URL::asset('backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>
+{{--<script src="{{ URL::asset('backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js') }}"></script>--}}
 <!-- Slimscroll -->
 {{--<script src="{{ URL::asset('backend/bower_components/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>--}}
 <!-- FastClick -->
@@ -209,7 +211,7 @@
 {{--<script src="{{ URL::asset('backend/bower_components/toastr/toastr.min.js') }}"></script>--}}
 
 <!-- iCheck -->
-<script src="{{ URL::asset('backend/plugins/iCheck/icheck.min.js') }}"></script>
+{{--<script src="{{ URL::asset('backend/plugins/iCheck/icheck.min.js') }}"></script>--}}
 <!-- Morris.js charts -->
 {{--<script src="{{ URL::asset('backend/bower_components/raphael/raphael.min.js') }}"></script>--}}
 {{--<script src="{{ URL::asset('backend/bower_components/morris.js/morris.min.js') }}"></script>--}}

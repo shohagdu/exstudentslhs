@@ -34,15 +34,16 @@ class DonationController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
-
             $query = DonarInfo::where([
                 [
                     'isActive',
                     '=',
                     '1'
                 ]
+
             ])->
             select('*');
 
@@ -56,6 +57,10 @@ class DonationController extends Controller
                         $q->orWhere('mobileNumber', 'like', '%'.$searchText.'%');
                     });
                 })
+                ->when(($request->status), function($query) use($request)  {
+                    $query->where('approvedStatus', $request->status);
+                })
+
                 ->orderBy('id', 'DESC')
                 ->get();
 
@@ -67,7 +72,7 @@ class DonationController extends Controller
                 foreach ($result as $key => $row) {
                     $editRoute = route('accounting_transaction.capital_investment.edit', ['id' => $row->id]);
                     $btn = '';
-                    $btn .= ' <button type="button" class="btn btn-info btn-xs " data-toggle="modal" data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-eye"></i> View </button>';
+                    $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-eye"></i> View </button>';
 
 
                     // $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Details"  data-id="' .      $row->id . '" data-original-title="Transaction Details" class="btn btn-success btn-sm viewStockDetail"><i class="fa fa-eye"></i></a>';
@@ -311,77 +316,44 @@ class DonationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $this->validate($request, [
-            'invest_amount' => 'required|numeric',
-            'comment' => 'required',
-            'id' => 'required',
-            'receiving_account' => 'required|integer'
+            'update_id' => 'required|numeric',
         ]);
 
-        DB::beginTransaction();
-
-
-        try {
-            $currentTransaction = GeneralLedger::find($id);
-            GeneralLedger::deleteTransaction($id);
-            $transactionId = GeneralLedger::getTransactionId();
-
-            $data_arr = [
-                'transaction_id' => $transactionId,
-                'amount' => $request->invest_amount,
-                'comment' => $request->comment,
-                'transaction_type' => GeneralLedger::$CAPITALINVESTMENT,
-                'created_at' => $currentTransaction->created_at,
-                'created_by' => $currentTransaction->created_by,
-                'created_by_ip' => $currentTransaction->created_by_ip,
-                'updated_at' => date('Y-m-d H:i:s'),
-                'updated_by' => Auth::id(),
-                'updated_by_ip' => $request->ip(),
-
-            ];
-
-            GeneralLedger::insert($data_arr);
-
-            $primaryId = DB::getPdo()->lastInsertId();
-
-            $transactionDetails = [
-                [
-                    'transaction_parent_id' => $primaryId,
-                    'debit_id' => $request->receiving_account,
-                    'credit_id' => null,
-                    'amount' => $request->invest_amount,
-                    'transaction_type' => GeneralLedger::$CAPITALINVESTMENT,
-                    'created_at' => $currentTransaction->created_at,
-                    'created_by' => $currentTransaction->created_by,
-                    'created_by_ip' => $currentTransaction->created_by_ip,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => Auth::id(),
-                    'updated_by_ip' => $request->ip()
-                ],
-                [
-                    'transaction_parent_id' => $primaryId,
-                    'credit_id' => TransactionalCOA::getOwnerInvestmentTransactionCOA()->id,
-                    'debit_id' => null,
-                    'amount' => $request->invest_amount,
-                    'transaction_type' => GeneralLedger::$CAPITALINVESTMENT,
-                    'created_at' => $currentTransaction->created_at,
-                    'created_by' => $currentTransaction->created_by,
-                    'created_by_ip' => $currentTransaction->created_by_ip,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => Auth::id(),
-                    'updated_by_ip' => $request->ip()
-                ]
-            ];
-            GeneralLedger::insert($transactionDetails);
-
-            DB::commit();
-            $redirectTo = route('accounting_transaction.capital_investment');
-            $response = ['success'=>"Transaction Saved Successful.", 'redirectTo' => $redirectTo];
-            \Toastr::success($response['success']);
+        if($request->currentStatus==$request->nextStatus) {
+            $response = ['error' =>'This Application has current status and next status is same.'];
+            return response()->json($response);
         }
-        catch (\Exception $e){
+
+        $currentData = DonarInfo::find($request->update_id);
+        if($currentData->approvedStatus==$request->nextStatus){
+            $response = ['error' =>'This Application has current status and next status is same.'];
+            return response()->json($response);
+        }
+
+        DB::beginTransaction();
+        try {
+            $updateInfo=[
+                'updated_at'        => date('Y-m-d H:i:s'),
+                'updated_by'        => Auth::id(),
+                'updated_ip'     => $request->ip()
+            ];
+
+            $data = [
+                'approvedStatus'    => 2,
+                'processInfo'       => json_encode($updateInfo),
+                'updated_at'        => date('Y-m-d H:i:s'),
+                'updated_by'        => Auth::id(),
+                'updated_ip'     => $request->ip()
+            ];
+            DonarInfo::where('id',$request->update_id)->update($data);
+            DB::commit();
+            $redirectTo = route('donation.donationRecord');
+            $response = ['success'=>"Successfully Approved", 'redirectTo' => $redirectTo];
+            \Toastr::success($response['success']);
+        } catch (\Exception $e){
             DB::rollback();
             $response = ['error'=>$e->getMessage()];
         }
@@ -413,4 +385,17 @@ class DonationController extends Controller
         return response()->json($response);
 
     }
+    public function singleDonationInfo(Request $request){
+        DB::beginTransaction();
+        try {
+            $info   =   DonarInfo::where(['id'=>$request->id])->first();
+            DB::commit();
+            $response = ['status'=>'success', 'message'=>"Data Found Successfully", 'data' => $info];
+        }catch (\Exception $e){
+            DB::rollback();
+            $response = ['status'=>'error','message'=>$e->getMessage(),'data'=>[]];
+        }
+        return response()->json($response);
+    }
+
 }

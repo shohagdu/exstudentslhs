@@ -24,18 +24,30 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <select name="status" id="status" class="form-control">
+                                            <option value="1">Waiting for Approved (Pending)</option>
+                                            <option value="2">Approved</option>
+                                            <option value="3">Declined</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
                             <table  class="data-table table table-bordered table-hover">
                                 <thead>
                                 <tr>
                                     <th>SL</th>
-                                    <th>Donar Name</th>
+                                    <th>Doner Name</th>
                                     <th>Mobile Number</th>
                                     <th>SSC Batch</th>
                                     <th>Send bKash Mobile  </th>
                                     <th>Transaction ID </th>
                                     <th>Amount </th>
                                     <th>Created At</th>
-                                    <th></th>
+                                    <th style="width: 8%"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -65,55 +77,59 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" action="" id="empDirecotryInfoForm" method="post">
+                    <form  action="" id="donationApprovedForm" method="post">
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" for="donerName">Doner Name</label>
+                            <div class="col-sm-12">
+                                <span class="donerName"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" for="donerMobile">Mobile Number</label>
+                            <div class="col-sm-12">
+                                <div class="donerMobile"></div>
+                            </div>
+                        </div>
 
                         <div class="form-group">
-                            <label class="control-label col-sm-12" for="name">Donar Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="name" placeholder="Enter Name" name="name">
+                            <label class="control-label col-sm-12" for="sscBatch">SSC Batch</label>
+                            <div class="col-sm-12">
+                                <div class="sscBatch"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-12" for="empID">Mobile Number</label>
+                            <label class="control-label col-sm-12" for="transactionID">Transaction Number</label>
+                            <div class="col-sm-12">
+                                <div class="transactionID"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" for="donationSendedNumber">Send bKash Number</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="MobileNumber" >
+                                <div class="donationSendedNumber"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-12" for="empID">SSC Batch</label>
+                            <label class="control-label col-sm-12" for="DonationAmount">Amount</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="MobileNumber" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-12" for="empID">Sended bKash Number</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="MobileNumber" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-12" for="empID">Transaction Number</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="MobileNumber" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-12" for="empID">Amount</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="MobileNumber" >
+                                <div class="DonationAmount"></div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-8">
-                                <div id="saved_form_output"></div>
+                                <div id="formOutput"></div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-8">
                                 <input type="hidden" name="update_id" id="update_id">
-                                <button type="button" class="btn btn-primary submit_btn" onclick="save_employee_direcotry_info_btn()"> <i class="glyphicon glyphicon-ok-sign"></i> <span id="submitBtnLabel"></span></button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Close</button>
+                                <input type="hidden" name="currentStatus" id="currentStatus">
+                                <input type="hidden" name="nextStatus" id="nextStatus">
+                                <button type="button" class="btn btn-primary submit_btn" onclick="updateDonationBtn()"> <i class="fa fa-address-book" aria-hidden="true"></i> <span id="submitBtnLabel"></span></button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa
+                                fa-times" aria-hidden="true"></i> Close</button>
                             </div>
                         </div>
 
@@ -154,7 +170,13 @@
                     processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span> '
                 },
                 serverSide: true,
-                ajax: "{{ route('donation.donationRecord') }}",
+                ajax: {
+                    url: base_url + "/donation/donationRecord",
+                    method: "get",
+                    data: function (d) {
+                        (d.status = $("#status").val())
+                    },
+                },
                 columns: [
                     {data: 'sl', name: 'sl',class: 'text-left'},
                     {data: 'name', name: 'name',class: 'text-left'},
@@ -171,6 +193,10 @@
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
+            });
+
+            $("#status").change(function () {
+                table.draw();
             });
 
         });
@@ -199,44 +225,60 @@
         });
         function updateDoantionInfo(id){
             $("#update_id").val('');
-            $("#submitBtnLabel").html('Update');
-            $('#empDirecotryInfoForm')[0].reset();
+            $("#submitBtnLabel").html('Approved');
+            $('#donationApprovedForm')[0].reset();
             $(".submit_btn").attr("disabled", true);
-            $("#saved_form_output").html('');
-
+            $("#formOutput").html('');
             $.ajax({
                 type: "POST",
-                url: base_url + "/single_employee_direcotry_info",
+                url: base_url + "/donation/singleDonationInfo",
                 data: {id:id},
                 'dataType': 'json',
                 success: function (response) {
                     if (response.status=='success') {
                         var data=response.data;
+                        $(".submit_btn").attr("disabled", false);
                         $("#update_id").val(data.id);
-                        $("#empID").val(data.EmpID);
-                        $("#name").val(data.EmpName);
-                        // $("#designation_id").val(data.DesignationID);
-                        $('#designation_id').val(data.DesignationID).trigger('change');
-
-                        $("#mobile_1").val(data.Mobile_1);
-                        $("#mobile_2").val(data.Mobile_2);
-                        $("#mobile_3").val(data.Mobile_3);
-
-                        $("#email_1").val(data.Email_1);
-                        $("#email_2").val(data.Email_2);
-
-                        $("#display_position").val(data.display_position);
-                        $("#is_active").val(data.is_active);
-
+                        $(".donerName").html(data.name);
+                        $(".donerMobile").html(data.mobileNumber);
+                        $(".sscBatch").html(data.sscBatch);
+                        $(".transactionID").html(data.TransactionID);
+                        $(".donationSendedNumber").html(data.sendNumber);
+                        $(".DonationAmount").html(data.donationAmount);
+                        $("#currentStatus").val(data.approvedStatus);
+                        $("#nextStatus").val(2);
                     } else {
-
 
                     }
                 }
             });
-
-
         }
+
+        function updateDonationBtn(){
+            $(".submit_btn").attr("disabled", true);
+            $("#formOutput").html('');
+            $.ajax({
+                type: "POST",
+                url: base_url + "/donation/updateDonation",
+                data: $("#donationApprovedForm").serialize() ,
+                'dataType': 'json',
+                success: function (data) {
+                    $(".submit_btn").attr("disabled", false);
+                    if(data.success){
+                        $('#donationModal').modal('toggle');
+                        toastr.success(data.success);
+                        table.draw();
+                    }
+                    else{
+                        toastr.error(data.error);
+                    }
+
+
+                }
+            });
+        }
+
+
     </script>
 
 @endpush
