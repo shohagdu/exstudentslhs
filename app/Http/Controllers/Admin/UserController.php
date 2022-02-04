@@ -4,41 +4,37 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+//use Spatie\Permission\Models\Role;
+//use Spatie\Permission\Models\Permission;
 use Hash;
-use App\User;
+use App\Models\User;
 use App\Models\Profile;
-use App\Models\AnchalChild;
 
-use App\Models\Designations;
-use App\Models\Departments;
-use App\Models\Project;
 
-use DataTables;
-use Toastr;
 use Auth;
+use Toastr;
 use DB;
-use DateTime;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private $createdAt;
+    private $userID;
+    private $ipAddress;
+    public function __construct()
+    {
+        $this->createdAt    = date('Y-m-d H:i:s');
+        $this->ipAddress    = \request()->ip();
+        $this->userID       = $this->middleware(function ($request, $next) {
+            $this->userID = Auth::user()->id;
+            return $next($request);
+        });
+    }
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::select('users.*','project.name as project_name')->orderBy('updated_at', 'desc');
-            $query->join('project', function ($join) use ($request) {
-                $join->on('project.project_code','=','users.project_id');
-                if(!empty($request->project_id)) {
-                    $join->where('project.project_code', '=', $request->project_id);
-                }
-            });
+            $query = User::select('users.*')->orderBy('updated_at', 'desc');
             $query->where('users.is_admin','=',0);
+            $query->where('users.status','=',1);
             if(!empty($request->user_type)) {
                 $query->where('users.user_type','=',$request->user_type);
             }
@@ -47,58 +43,34 @@ class UserController extends Controller
                 $query->where(function($q) use ($searchText){
                     $q->orWhere('users.name', 'like', '%'.$searchText.'%');
                     $q->orWhere('users.email', 'like', '%'.$searchText.'%');
-                    $q->orWhere('project.name', 'like', '%'.$searchText.'%');
                 });
             }
 
             $total = $query->count();
-
             $totalFiltered = $total;
-
             $result = $query->skip($request->start)->take($request->length)->orderBy('id', 'desc')->get();
 
             $data = [];
 
             if(count($result)>0) {
-
+                $userRoleInfo = user::userRoleInfo();
                 foreach($result as $key => $row) {
-                    $projectName = $row->project_name;
-                    $typeName = '';
-                    if($row->user_type==1) {
-                        $typeName = 'Coordinator';
-                    }
-                    elseif($row->user_type==2) {
-                        $typeName = 'MNE';
-                    }
-                    elseif($row->user_type==3) {
-                        $typeName = 'Regular User';
-                    }
-                    elseif($row->user_type==0) {
-                        $typeName = 'Regular User';
-                    }
-
                     $rowData=[
-                        'sl' => $key+1,
-                        'name' => (app()->getLocale() == 'en') ? $row->name : $row->name,
-                        'email' => $row->email,
-                        'project_name' => $projectName,
-                        'type_name' => $typeName,
+                        'sl'                => $key+1,
+                        'name'              => (app()->getLocale() == 'en') ? $row->name : $row->name,
+                        'email'             => $row->email,
+                        'mobile'            => $row->mobile,
+                        'user_type'         => (!empty($userRoleInfo[$row->user_type])
+                            ?$userRoleInfo[$row->user_type]:''),
+                        'mobileBankBkash'   => $row->mobileBankBkash,
+                        'isActive'          => $row->status,
                     ];
-                    if($row->status == 1)
-                    {
-                        $class = "checked";
-                    }
-                    else
-                    {
-                        $class = "";
-                    }
 
-                    $action = '<label>
-             <input type="checkbox" '.$class.' class="flat-red active_status" data-id="'.$row->id.'" >
-             </label>';
-                    $action .= ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="btn bg-purple btn-xs edit editData" data-route="' . route('users.edit', $row->id) . '" ><i class="fa fa-pencil"></i></a>';
-                    $action .= ' <a class="btn btn-xs btn-warning" href="' . route('user_permissions', $row->id) . '"><i class="fa fa-shield" title="Assigned Forms"></i></a>';
-                    $action .= ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-xs deleteData"><i class="fa fa-trash"></i></a>';
+                    $action='';
+                    $action .= ' <a href="' . route('user.edit', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="btn bg-purple btn-xs edit editData" data-route="' . route('user.edit', $row->id) . '" ><i class="fa fa-edit"></i>Edit</a>';
+
+                    $action .= ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-xs deleteData"><i class="fa fa-trash"></i> Delete</a>';
+
                     $rowData['action'] = $action;
 
                     $data[] = $rowData;
@@ -112,22 +84,11 @@ class UserController extends Controller
             );
             return  response()->json($json_data); // send data as json format
         }
-        $users = User::all();
-        $coordinator = User::where([['user_type','=',1],['is_admin','=',0]])->get();
-        $emine = User::where([['user_type','=',2],['is_admin','=',0]])->get();
-        $loginUser = User::find(Auth::id());
-        $user = Auth::user();
-
-        $anchalQuery = AnchalChild::query()
-            ->select('anchal_auto_id','project_id','project.name');
-        $anchalQuery->join('project', function ($join) use ($request) {
-                $join->on('project.project_code','=','tb_anchal_child_reg.project_id');
-            });
-        $anchal = $anchalQuery->groupBy('anchal_auto_id')
-            ->get();
-
-        $project = $loginUser->is_admin==1 ? DB::table('project')->get() :  DB::table('project')->where('project_code',$loginUser->project_id)->get();
-        return view('admin.users.index', compact('anchal','emine','coordinator','users','user','project') );
+        $users          = User::all();
+        $loginUser      = User::find(Auth::id());
+        $user           = Auth::user();
+        $roles          = User::userRoleInfo();
+        return view('admin.users.index', compact('users','user','loginUser','roles') );
     }
 
     /**
@@ -138,7 +99,7 @@ class UserController extends Controller
     public function create()
     {
         //
-        $roles = Role::all();
+        $roles = User::userRoleInfo();
         return view('admin.users.create', compact('roles'));
 
     }
@@ -151,49 +112,37 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request;
         $validated_arr = $this->validate($request,[
             'id' => 'nullable',
-            'permission' => 'nullable',
-            'access_all_project' => 'nullable',
-            'emine' => 'nullable',
-            'coordinator' => 'nullable',
             'name' => 'required|string',
-            'project_id' => 'required',
             'user_type' => 'required|numeric',
             'email' => 'required|string|email',
-//            'email' => 'required|string|email|unique:users,email,'. $request->id,
-            'password' => 'nullable|string|min:8',
+            'password' => 'nullable|string',
         ]);
-        // return $request;
-        $validated_arr['access_all_project'] = !empty($request->access_all_project) ? 1: 0;
-        $validated_arr['coordinator'] = !empty($request->coordinator) ? implode(',',$request->coordinator): null;
-        $validated_arr['emine'] = !empty($request->emine) ? implode(',',$request->emine): null;
-        $validated_arr['permission'] = !empty($request->permission) ? preg_replace('/\s+/', '', $request->permission) : null;
 
         if($request->id != null) {
             if ($request->has('password')) {
                 unset($validated_arr['password']);
             }
             $validated_arr['updated_by'] = Auth::id();
-
             // code exist check
             $where = [
                 ['email', '=', $request->email],
-//                ['project_id', '=', $request->project_id],
                 ['deleted_by', '=', null],
                 ['id', '!=', $request->id],
             ];
             $exist = DB::table('users')->where($where)->first();
             if (!empty($exist)) {
                 $response = ['error' => 'Email Already Exist'];
-                return response()->json($response);
+                Toastr::error($response['error']);
+                return redirect('admin/user/create')
+                    ->withInput();
             }
         }
         else
         {
             $this->validate($request, [
-                'password' => 'required|string|min:8|confirmed',
+                'password' => 'required|string|confirmed',
             ]);
 
             $validated_arr['created_by'] = Auth::id();
@@ -203,40 +152,20 @@ class UserController extends Controller
             // code exist check
             $where = [
                 ['email', '=', $request->email],
-//                ['project_id', '=', $request->project_id],
                 ['deleted_by', '=', null],
             ];
             $exist = DB::table('users')->where($where)->first();
             if(!empty($exist)) {
                 $response = ['error'=>'Email Already Exist'];
-                return response()->json($response);
+                Toastr::error($response['error']);
+                return redirect('admin/user/create')
+                    ->withInput();
             }
         }
+        User::updateOrCreate(['id' => $request->id], $validated_arr);
 
-        $user = User::updateOrCreate(['id' => $request->id], $validated_arr);
-        $imagename ='/uploads/profile/avatar.jpg';
-        // if(!empty($request->image)) {
-        //     $profile_photo = $request->image;
-        //     $profile_photo_new = time() . '_' . Auth::id() . '_' . $profile_photo->getClientOriginalName();
-        //     $profile_photo->move('uploads/profile', $profile_photo_new);
-        //     $imagename = '/uploads/profile/' . $profile_photo_new;
-        // }
-
-        // Profile::where('user_id','=', $request->id)->update([
-        // 'image' =>  $imagename,
-        if(!empty($request->id)) {
-            // Profile::where('user_id','=', $request->id)->update([
-            //     'image' =>  $imagename,
-            // ]);
-        }
-        else  {
-            $profile = new Profile;
-            $profile->user_id = $user->id;
-            $profile->image = $imagename;
-            $profile->save();
-        }
-
-        return response()->json(['success'=>'Employee saved successfully.']);
+        Toastr::success('User saved successfully');
+        return redirect()->route('user.userRecord');
 
     }
     public function toggleStatus(Request $request)
@@ -289,9 +218,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit( $id)
     {
-        //
+        dd($id);
         $user = User::find($id);
         return $user;
         // $roles = Role::all();
@@ -344,25 +273,33 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request  $request)
     {
-        //
-        $user = User::find($id);
-        if($user == Auth::user())
-        {
-            // Toastr::error('You can not delete your own account');
-            // return redirect()->back();
+        $user = User::find($request->id);
+        if(empty($user)){
+            return response()->json(['error' => 'This User is not eligible for Deleted']);
+        }
+        if($user == Auth::user()){
             return response()->json(['error' => 'You can not delete your own account']);
         }
-        elseif ($user->last_login != null) {
-//            return response()->json(['error' => 'This user can be deleted now']);
-        }
-        $user->deleted_by = Auth::id();
-        $user->save();
-        $user->delete();
-        return response()->json(['success' => 'Successfully deleted the User']);
 
-        // Toastr::success('Successfully deleted the User');
-        // return redirect()->route('users.index');
+        $user->deleted_at = $this->createdAt;
+        $user->deleted_by = $this->userID;
+        $user->updated_ip = $this->ipAddress;
+
+        $user->updated_by = $this->userID;
+        $user->updated_at = $this->createdAt;
+        $user->status     = 0;
+
+        DB::beginTransaction();
+        try {
+            $user->save();
+            DB::commit();
+            return response()->json(['success' => 'Successfully Deleted the User']);
+        }catch (\Exception $e){
+            DB::rollback();
+            $response = ['error'=>$e->getMessage()];
+            return response()->json($response);
+        }
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\UserAccessController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DonationController;
+use App\Http\Controllers\Admin\UserController;
 
 // accounting transaction controller
 use App\Http\Controllers\Admin\accounting_transaction\CapitalInvestment;
@@ -58,22 +59,28 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
         Route::delete('capital_investment/{id}', [CapitalInvestment::class, 'destroy'])->name('accounting_transaction.capital_investment.delete');
     });
 
-    // Donation
+    // Donation Management
     Route::group(['prefix'=>'donation'],function(){
-        /* capital investment */
         Route::get('donationRecord' , [DonationController::class,'index'])->name('donation.donationRecord');
         Route::post('singleDonationInfo' , [DonationController::class,'singleDonationInfo'])->name('donation.singleDonationInfo');
-
         Route::post('updateDonation', [DonationController::class, 'update'])->name('donation.updateDonation');
-
-
-//        Route::get('donation/create', [CapitalInvestment::class,'create'])->name('accounting_transaction.capital_investment.create');
-//        Route::post('capital_investment/store', [CapitalInvestment::class, 'store'])->name('accounting_transaction.capital_investment.store');
-//        Route::get('capital_investment/{id}/edit', [CapitalInvestment::class, 'edit'])->name('accounting_transaction.capital_investment.edit');
-
-//        Route::get('capital_investment/{id}', [CapitalInvestment::class, 'show'])->name('accounting_transaction.capital_investment.show');
-//        Route::delete('capital_investment/{id}', [CapitalInvestment::class, 'destroy'])->name('accounting_transaction.capital_investment.delete');
     });
+
+    // User Management
+    Route::group(['prefix'=>'user'],function(){
+        Route::get('userRecord' , [UserController::class,'index'])->name('user.userRecord');
+        Route::post('store' , [UserController::class,'store'])->name('user.store');
+        Route::get('edit' ,  [UserController::class,'edit'])->name('user.edit');
+        Route::get('create' ,  [UserController::class,'create'])->name('user.create');
+        Route::post('destroy' ,  [UserController::class,'destroy'])->name('user.destroy');
+
+
+        //Route::post('singleDonationInfo' , [DonationController::class,'singleDonationInfo'])->name('donation
+        //.singleDonationInfo');
+       // Route::post('updateDonation', [DonationController::class, 'update'])->name('donation.updateDonation');
+    });
+
+
 
 
     // profile routes

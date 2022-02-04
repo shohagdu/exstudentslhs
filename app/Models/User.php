@@ -46,4 +46,14 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Models\Profile');
     }
+    public static function userRoleInfo()
+    {
+        return [
+          1=>'Super Admin',
+          2=>'Admin',
+          3=>'Fund Collection Coordinator',
+          4=>'Operator'
+        ];
+    }
+
 }

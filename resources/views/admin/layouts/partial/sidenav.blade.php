@@ -121,7 +121,7 @@
                 </ul>
             </li>
             -->
-            <!--
+
             <li class="nav-item">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-user-cog"></i>
@@ -129,22 +129,22 @@
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('user.userRecord') }}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p> User Record</p>
                         </a>
                     </li>
-
+                    <!--
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Add Permission</p>
                         </a>
                     </li>
-
+                    -->
                 </ul>
             </li>
-            -->
+
             <li class="nav-item">
                 <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();document.getElementById
                 ('logout-form').submit();" ><i class="nav-icon fas fa-sign-out-alt"></i>Sign out</a>

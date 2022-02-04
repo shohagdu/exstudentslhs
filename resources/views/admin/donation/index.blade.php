@@ -277,9 +277,6 @@
                 }
             });
         }
-
-
     </script>
-
 @endpush
 
