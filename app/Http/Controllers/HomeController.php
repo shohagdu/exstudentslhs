@@ -34,13 +34,13 @@ class HomeController extends Controller
     public function donationFormAction(request $request){
         $validator = Validator::make($request->all(), [
             'name'              => ['required', 'string', 'max:255'],
-            'mobileNumber'      => ['required', 'string',  'min:11'],
+            'mobileNumber'      => ['required',   'min:11'  ,'numeric'],
             'sscBatch'          => ['required'],
             'sendNumber'        => ['required'],
             //'donationBy'        => ['required'],
 //            'TransactionID' => ['required', 'string'],
-            'donationAmount'    => ['required'],
-            'TransactionMobileNumber'=> ['required'],
+            'donationAmount'    => ['required','numeric'],
+            'TransactionMobileNumber'=> ['required',  'min:11'  ,'numeric'],
         ],[
             'name.required'                         => 'আপনার নাম প্রদান করুন',
             'mobileNumber.required'                 => 'আপনার মোবাইল নাম্বার প্রদান করুন',
