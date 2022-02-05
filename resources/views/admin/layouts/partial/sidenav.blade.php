@@ -1,4 +1,6 @@
-
+@php
+    $userType           = Auth::user()->user_type;
+@endphp
 <!-- Brand Logo -->
 <a href="{{ URL('/')}}" class="brand-link">
     <img src="{{ asset('backend/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -121,29 +123,30 @@
                 </ul>
             </li>
             -->
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-user-cog"></i>
-                    <p> User Management <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{ route('user.userRecord') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p> User Record</p>
-                        </a>
-                    </li>
-                    <!--
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Add Permission</p>
-                        </a>
-                    </li>
-                    -->
-                </ul>
-            </li>
+            @if(!empty($userType) && ($userType==1 || $userType==2))
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user-cog"></i>
+                        <p> User Management <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('user.userRecord') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> User Record</p>
+                            </a>
+                        </li>
+                        <!--
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Add Permission</p>
+                            </a>
+                        </li>
+                        -->
+                    </ul>
+                </li>
+            @endif
 
             <li class="nav-item">
                 <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();document.getElementById
