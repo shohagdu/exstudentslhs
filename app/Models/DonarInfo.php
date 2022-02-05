@@ -22,6 +22,7 @@ class DonarInfo extends Authenticatable
         'donationBy',
         'TransactionID',
         'donationAmount',
+        'TransactionMobileNumber',
         'created_by',
         'created_ip',
     ];

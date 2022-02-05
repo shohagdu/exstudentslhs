@@ -11,14 +11,22 @@
                 @csrf
                 <div class="form-group row">
                     <div class="offset-md-4 col-md-8">
-                        <p class="h4">Donation & Sponsor Form</p>
+                        <p class="h4">নির্ধারিত বিকাশ নাম্বারে ডোনেশান পাঠানোর পর নিম্নোক্ত তথ্য গুলো পূরন করুন: </p>
+                        <span style="color:red;font-weight: bold;text-align: justify;"> (বিকাশের মাধ্যমে টাকা পাঠানোর
+                            পর যদি
+                            এই ফরম পূরণ না
+                            করলে,
+                              উক্ত
+                              ডোনেশান
+                              পাঠানোর
+                        প্রক্রিয়া
+                        সম্পন্ন হবে না)</span>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                    <label for="name" class="col-md-4 col-form-label text-md-right">আপনার নাম</label>
                     <div class="col-md-6">
-                        <input id="name" type="text" placeholder="Enter Name" class="form-control @error('name')
-                            is-invalid @enderror"
+                        <input id="name" type="text" placeholder="আপনার নাম প্রদান করুন" class="form-control @error ('name') is-invalid @enderror"
                                name="name" value="{{ old('name') }}"  autocomplete="name" autofocus>
                         @error('name')
                             <span class="invalid-feedback" role="alert">
@@ -30,9 +38,9 @@
 
 
                 <div class="form-group row">
-                    <label for="mobileNumber" class="col-md-4 col-form-label text-md-right">Mobile Number</label>
+                    <label for="mobileNumber" class="col-md-4 col-form-label text-md-right">আপনার মোবাইল নাম্বার</label>
                     <div class="col-md-6">
-                        <input id="mobileNumber" type="text" placeholder="Enter Your Mobile Number"
+                        <input id="mobileNumber" maxlength="15" minlength="11" type="text" placeholder="আপনার মোবাইল  নাম্বার প্রদান  করুন"
                                class="form-control  @error ('mobileNumber') is-invalid @enderror"
                                name="mobileNumber" value="{{ old('mobileNumber') }}"  autocomplete="email">
                         @error('mobileNumber')
@@ -44,10 +52,10 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="sscBatch" class="col-md-4 col-form-label text-md-right">SSC Batch</label>
+                    <label for="sscBatch" class="col-md-4 col-form-label text-md-right">এস.এস.সি ব্যাচ</label>
                     <div class="col-md-6">
                         <select class="form-control @error ('sscBatch') is-invalid @enderror" id="sscBatch" name="sscBatch">
-                            <option value="">Select Batch</option>
+                            <option value="">এস.এস.সি ব্যাচ চিহ্নিত করুন</option>
                             @for($i=2021;$i>=1962;$i--)
                                 <option value="{{ $i }}" {{ ((!empty(old('sscBatch')) && (old('sscBatch')==$i))?"selected":'') }}>{{ $i
                                 }}</option>
@@ -60,17 +68,13 @@
                         @enderror
                     </div>
                 </div>
+
                 <div class="form-group row">
-                    <label for="donationAmount" class="col-md-4 col-form-label text-md-right"></label>
-                    <div class="col-md-6 text-center ">
-                        <label><u>Donation & Sponsor Information</u></label>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="donationAmount" class="col-md-4 col-form-label text-md-right">Donation Amount</label>
+                    <label for="donationAmount" class="col-md-4 col-form-label text-md-right">ডোনেশানের পরিমান</label>
                     <div class="col-md-6">
-                        <input id="donationAmount" placeholder="Enter Donation Amount" value="{{ old('donationAmount') }}" type="text"
-                               class="form-control @error('donationAmount') is-invalid @enderror" name="donationAmount">
+                        <input id="donationAmount" placeholder="ডোনেশানের পরিমান" value="{{ old('donationAmount') }}" type="text"
+                               class="form-control onlyNumber @error('donationAmount') is-invalid @enderror"
+                               name="donationAmount">
                         @error('donationAmount')
                         <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -79,10 +83,11 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sendNumber" class="col-md-4 col-form-label text-md-right">Donation Send Number</label>
+                    <label for="sendNumber" class="col-md-4 col-form-label text-md-right">যে বিকাশ নাম্বারে টাকা পাঠাবেন
+                    </label>
                     <div class="col-md-6">
                         <select class="form-control  @error ('sendNumber') is-invalid @enderror" id="sendNumber" name="sendNumber">
-                            <option value="">Select Send Number</option>
+                            <option value="">বিকাশ নাম্বার চিহ্নিক করুন</option>
                             @if(!empty($fundCoordinator))
                                 @foreach($fundCoordinator as $coOrdinatorKey=>$fundOrdinatorName)
                             <option value="{{ $coOrdinatorKey }}" {{ ((!empty(old('sendNumber')) && (old('sendNumber')==$coOrdinatorKey))
@@ -97,8 +102,9 @@
                         @enderror
                     </div>
                 </div>
+                <!--
                 <div class="form-group row">
-                    <label for="donationBy" class="col-md-4 col-form-label text-md-right">Select Donation By</label>
+                    <label for="donationBy" class="col-md-4 col-form-label text-md-right">যে ভাবে টাকা পাঠাবেন</label>
                     <div class="col-md-6">
                         <select class="form-control @error ('donationBy') is-invalid @enderror" id="donationBy" name="donationBy">
                             <option value="2" {{ ((!empty(old('donationBy')) && (old('donationBy')==2))
@@ -111,11 +117,31 @@
                         @enderror
                     </div>
                 </div>
+                -->
 
                 <div class="form-group row">
-                    <label for="TransactionID" class="col-md-4 col-form-label text-md-right">Transaction ID</label>
+                    <label for="TransactionID" class="col-md-4 col-form-label text-md-right">  যে বিকাশ নাম্বার থেকে
+                        টাকা
+                        পাঠানো হয়েছে
+                    </label>
                     <div class="col-md-6">
-                        <input id="TransactionID" placeholder="Enter Transaction ID" type="text" value="{{ old('TransactionID') }}"
+                        <input id="TransactionMobileNumber" maxlength="15" minlength="11" placeholder="যে নাম্বার থেকে  টাকা   পাঠানো  হয়েছে ঐ নাম্বার প্রদান করুন"
+                               type="text"
+                               value="{{ old('TransactionMobileNumber') }}"
+                               class="form-control @error('TransactionMobileNumber') is-invalid @enderror" name="TransactionMobileNumber"
+                                >
+                        @error('TransactionMobileNumber')
+                             <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="TransactionID" class="col-md-4 col-form-label text-md-right">বিকাশ ট্রানজেশন আইডি</label>
+                    <div class="col-md-6">
+                        <input id="TransactionID" placeholder="বিকাশ ট্রানজেশন আইডি প্রদান করুন" type="text"
+                               value="{{ old('TransactionID') }}"
                                class="form-control @error('TransactionID') is-invalid @enderror" name="TransactionID"
                                 >
                         @error('TransactionID')
@@ -125,6 +151,7 @@
                         @enderror
                     </div>
                 </div>
+
 
                 <div class="form-group row mb-0">
                     <div class="col-md-6 offset-md-4">
@@ -151,4 +178,9 @@
     </div>
     <!-- /.card -->
 </div>
+<script>
+    setTimeout(function() {
+        $('#alert_hide_after').fadeOut('fast');
+    }, 3000);
+</script>
 @include('home.footer')

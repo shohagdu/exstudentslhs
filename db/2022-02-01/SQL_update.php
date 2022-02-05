@@ -8,3 +8,5 @@ ALTER TABLE `donarinfos` CHANGE `approvedInfo` `processInfo` TEXT CHARACTER SET 
 
 
 --ALTER TABLE `users` ADD `mobileBankBkash` VARCHAR(15) NULL DEFAULT NULL AFTER `mobile`;
+
+ALTER TABLE `donarinfos` ADD `TransactionMobileNumber` VARCHAR(15) NULL DEFAULT NULL AFTER `TransactionID`;

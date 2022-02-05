@@ -34,12 +34,20 @@ class HomeController extends Controller
     public function donationFormAction(request $request){
         $validator = Validator::make($request->all(), [
             'name'              => ['required', 'string', 'max:255'],
-            'mobileNumber'      => ['required', 'string',  'max:11'],
+            'mobileNumber'      => ['required', 'string',  'min:11'],
             'sscBatch'          => ['required'],
             'sendNumber'        => ['required'],
-            'donationBy'        => ['required'],
+            //'donationBy'        => ['required'],
 //            'TransactionID' => ['required', 'string'],
             'donationAmount'    => ['required'],
+            'TransactionMobileNumber'=> ['required'],
+        ],[
+            'name.required'                         => 'আপনার নাম প্রদান করুন',
+            'mobileNumber.required'                 => 'আপনার মোবাইল নাম্বার প্রদান করুন',
+            'sscBatch.required'                     => 'আপনার এস.এস.সি ব্যাচ চিহ্নিত করুন',
+            'donationAmount.required'               => 'আপনার ডোনেশানের পরিমান প্রদান করুন',
+            'sendNumber.required'                   => 'যে বিকাশ নাম্বারে টাকা পাঠাবেন চিহ্নিত',
+            'TransactionMobileNumber.required'      => 'যে বিকাশ নাম্বার থেকে টাকা পাঠানো হয়েছে প্রদান করুন'
         ]);
 
         if ($validator->fails()) {
@@ -56,6 +64,7 @@ class HomeController extends Controller
             'donationBy'            => $request->donationBy,
             'TransactionID'         => $request->TransactionID,
             'donationAmount'        => $request->donationAmount,
+            'TransactionMobileNumber'=> $request->TransactionMobileNumber,
             'created_at'            => date('Y-m-d H:i:s'),
             'created_by'            => NULL,
             'created_ip'            => $request->ip(),
@@ -78,7 +87,7 @@ class HomeController extends Controller
             $data['user_id']    =   $userInfo->id;
             DonarInfo::create($data);
             DB::commit();
-            $success_output ="Dear {$data['name']}, Thank you for your great generosity! We, at 'Ex. Student Forum of Lemua High School',  greatly appreciate your donation. Your support helps to succeed our mission.";
+            $success_output ="Dear {$data['name']}, Thank you for your great generosity! We, at 'Ex. Student Forum of Lemua High School',  greatly appreciate your donation. Your support helps to succeed our mission. ";
             Session::flash('message', $success_output);
             return redirect('/');
         } catch (\Exception $e) {
