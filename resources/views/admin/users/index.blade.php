@@ -43,7 +43,9 @@
                                         <th class="text-left">Name</th>
                                         <th class="text-left">Email</th>
                                         <th class="text-left">Mobile</th>
+                                        <th class="text-left">bKash</th>
                                         <th class="text-left">Type</th>
+                                        <th class="text-left">Status</th>
                                         <th style="width: 170px;">Action</th>
                                     </tr>
                                 </thead>
@@ -89,7 +91,9 @@
                     {data: 'name', name: 'name',class: 'text-left'},
                     {data: 'email', name: 'email',class: 'text-left'},
                     {data: 'mobile', name: 'mobile',class: 'text-left'},
+                    {data: 'mobileBankBkash', name: 'mobileBankBkash',class: 'text-left'},
                     {data: 'user_type', name: 'user_type',class: 'text-left'},
+                    {data: 'isActive', name: 'isActive',class: 'text-left'},
                     {data: 'action', name: 'action', orderable: false, searchable: false,class: 'text-center'},
                 ],
             });

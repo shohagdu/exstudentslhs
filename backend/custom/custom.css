@@ -10,3 +10,6 @@ footer {
     /*font-size: 14px;*/
     text-align: center;
 }
+.bg-light-blue{
+    background-color: blue !important;
+}

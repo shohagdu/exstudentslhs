@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 //use Spatie\Permission\Models\Permission;
 use Hash;
 use App\Models\User;
-use App\Models\Profile;
+
 
 
 use Auth;
@@ -34,7 +34,7 @@ class UserController extends Controller
         if ($request->ajax()) {
             $query = User::select('users.*')->orderBy('updated_at', 'desc');
             $query->where('users.is_admin','=',0);
-            $query->where('users.status','=',1);
+            $query->whereIn('users.status',[1,2]);
             if(!empty($request->user_type)) {
                 $query->where('users.user_type','=',$request->user_type);
             }
@@ -63,11 +63,13 @@ class UserController extends Controller
                         'user_type'         => (!empty($userRoleInfo[$row->user_type])
                             ?$userRoleInfo[$row->user_type]:''),
                         'mobileBankBkash'   => $row->mobileBankBkash,
-                        'isActive'          => $row->status,
+                        'isActive'          => (!empty($row->status)?(($row->status==1)?"<span style='background-color: green !important;color: #fff;padding: 4px;border-radius: 5px'>Active</span>":"<span style='background-color: red !important;color: #fff;padding: 4px;border-radius: 5px'>Inactive</span>")
+                            :''),
                     ];
 
                     $action='';
-                    $action .= ' <a href="' . route('user.edit', $row->id) . '" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Edit" class="btn bg-purple btn-xs edit editData" data-route="' . route('user.edit', $row->id) . '" ><i class="fa fa-edit"></i>Edit</a>';
+                    $action .= ' <a href="' . route('user.edit', $row->id) . '" data-toggle="tooltip"  data-id="' .
+                        $row->id . '" data-original-title="Edit" class="btn bg-purple btn-xs edit editData" data-route="' . route('user.edit', $row->id) . '" ><i class="fa fa-edit"></i>Edit</a>';
 
                     $action .= ' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-xs deleteData"><i class="fa fa-trash"></i> Delete</a>';
 
@@ -145,9 +147,12 @@ class UserController extends Controller
                 'password' => 'required|string|confirmed',
             ]);
 
-            $validated_arr['created_by'] = Auth::id();
-            $validated_arr['project_id'] = $request->project_id;
-            $validated_arr['password'] = Hash::make($request->password);
+            $validated_arr['created_by']        = Auth::id();
+            $validated_arr['project_id']        = $request->project_id;
+            $validated_arr['password']          = Hash::make($request->password);
+
+            $validated_arr['mobile']            = $request->mobileNumber;
+            $validated_arr['mobileBankBkash']   = $request->bkashNumber;
 
             // code exist check
             $where = [
@@ -220,11 +225,9 @@ class UserController extends Controller
      */
     public function edit( $id)
     {
-        dd($id);
-        $user = User::find($id);
-        return $user;
-        // $roles = Role::all();
-        // return view('admin.users.edit', compact('user', 'roles'));
+        $user           = User::find($id);
+        $roles          = User::userRoleInfo();
+        return view('admin.users.edit', compact('user', 'roles'));
 
     }
 
@@ -235,36 +238,49 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
         $this->validate($request,[
-            'email' => 'required|string|email|max:255',
-            'name' => 'required|string|max:255',
-            'password' => 'nullable|string|min:8|confirmed',
+            'email' => 'required|string|max:255',
+            'name' => 'required|string|max:255'
         ]);
 
-        $user = User::find($id);
+        $user = User::find($request->id);
         if($request->email != $user->email)
         {
             $this->validate($request,[
-                'email' => 'required|string|email|max:255|unique:users'
+                'email' => 'required|string|max:255|unique:users'
             ]);
         }
-
-        if($request->password)
-        {
+        if(!empty($request->password)) {
             $user->password = Hash::make($request->password);
         }
-        $user->name = $request->name;
-        $user->email = $request->email;
+        $user->name                 = $request->name;
+        $user->email                = $request->email;
+        $user->mobile               = $request->mobileNumber;
+        $user->mobileBankBkash      = $request->bkashNumber;
+        $user->user_type            = $request->user_type;
+        $user->status               = $request->isActiveStatus;
 
-        // $user->syncRoles($request->role);
+        $user->updated_ip           = $this->ipAddress;
 
-        $user->updated_by = Auth::id();
-        $user->save();
-        Toastr::success('User Updated successfully');
-        return redirect()->route('users.index');
+        $user->updated_by           = $this->userID;
+        $user->updated_at           = $this->createdAt;
+
+        DB::beginTransaction();
+        try {
+            $user->save();
+            DB::commit();
+            Toastr::success('User Updated successfully');
+            return redirect()->route('user.userRecord');
+        }catch (\Exception $e){
+            DB::rollback();
+            $response = ['error'=>$e->getMessage()];
+            Toastr::error($response);
+            return redirect()->route('user.userRecord');
+        }
+
+
     }
 
     /**

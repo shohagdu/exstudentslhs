@@ -70,9 +70,10 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
     Route::group(['prefix'=>'user'],function(){
         Route::get('userRecord' , [UserController::class,'index'])->name('user.userRecord');
         Route::post('store' , [UserController::class,'store'])->name('user.store');
-        Route::get('edit' ,  [UserController::class,'edit'])->name('user.edit');
+        Route::get('edit/{id}' ,  [UserController::class,'edit'])->name('user.edit');
         Route::get('create' ,  [UserController::class,'create'])->name('user.create');
         Route::post('destroy' ,  [UserController::class,'destroy'])->name('user.destroy');
+        Route::post('update', [UserController::class, 'update'])->name('user.update');
 
 
         //Route::post('singleDonationInfo' , [DonationController::class,'singleDonationInfo'])->name('donation

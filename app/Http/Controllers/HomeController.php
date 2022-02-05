@@ -20,7 +20,8 @@ class HomeController extends Controller
     //    }
 
     public function index(){
-        return view('home.donationForm');
+        $fundCoordinator    =   User:: select(DB::raw("CONCAT(mobileBankBkash,' (',name,')') AS name"),'id')->where(['user_type'=>3,'status'=>1])->pluck('name','id');
+        return view('home.donationForm', compact('fundCoordinator'));
     }
     public function aboutUs(){
         return view('home.aboutUs');

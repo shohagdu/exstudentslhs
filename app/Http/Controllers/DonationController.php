@@ -34,7 +34,6 @@ class DonationController extends Controller
      */
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
             $query = DonarInfo::where([
@@ -45,8 +44,14 @@ class DonationController extends Controller
                 ]
 
             ])->
-            select('*');
-
+            select('donarinfos.*','users.mobileBankBkash',"users.name as userName");
+            $query->leftJoin('users', function($join) {
+                $join->on('users.id', '=', 'donarinfos.sendNumber');
+            });
+            if(isset(Auth::user()->user_type) && (Auth::user()->user_type==2 ||Auth::user()->user_type==3 ||
+                Auth::user()->user_type==4)){
+                $query->where('donarinfos.sendNumber', '=', Auth::id());
+            }
             $total = $query->count();
             $totalFiltered = $total;
 
@@ -86,7 +91,7 @@ class DonationController extends Controller
                         'name'              => $row->name,
                         'mobileNumber'      => $row->mobileNumber,
                         'sscBatch'          => $row->sscBatch,
-                        'sendNumber'        => $row->sendNumber,
+                        'sendNumber'        => $row->mobileBankBkash." (".$row->userName.")",
                         'TransactionID'     => $row->TransactionID,
                         'donationAmount'    => $row->donationAmount,
                         'created_at'        => date('d M, Y h:i a',strtotime($row->created_at)),

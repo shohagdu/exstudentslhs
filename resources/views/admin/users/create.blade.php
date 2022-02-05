@@ -27,7 +27,9 @@
                                             <label for="name" class="text-md-right">{{ __('Name') }}: <small style="color:red">*</small></label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" tabindex="1" autofocus>
+                                            <input id="name" type="text" placeholder="Enter Name" class="form-control
+@error('name')
+                                                is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" tabindex="1" autofocus>
 
                                             @error('name')
                                             <span class="text-danger">
@@ -41,7 +43,10 @@
                                             <label for="email" class="text-md-right">{{ __('E-Mail Address') }}: <small style="color:red">*</small></label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" tabindex="2">
+                                            <input id="email" type="text" placeholder="Enter Email" class="form-control
+@error('email')
+                                                is-invalid
+@enderror" name="email" value="{{ old('email') }}" required autocomplete="email" tabindex="2">
 
                                             @error('email')
                                             <span class="text-danger">
@@ -51,12 +56,53 @@
                                         </div>
                                     </div>
 
+
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-2 text-center">
+                                            <label for="mobileNumber" class="text-md-right">{{ __('Mobile Number') }}:</label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <input id="mobileNumber" type="text" placeholder="Enter Mobile Number"
+                                                   class="form-control @error('mobileNumber')    is-invalid
+@enderror" name="mobileNumber" value="{{ old('mobileNumber') }}" required
+                                                   tabindex="3" autofocus>
+
+                                            @error('name')
+                                                <span class="text-danger">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-2 text-center">
+                                            <label for="bkashNumber" class="text-md-right">{{ __('bKash Number') }}:</label>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <input id="bkashNumber" type="text" placeholder="Enter bKash Number"
+                                                   class="form-control
+@error('bkashNumber')
+                                                is-invalid @enderror" name="bkashNumber" value="{{ old('bkashNumber')
+                                                 }}" required  tabindex="4" autofocus>
+
+                                            @error('name')
+                                                <span class="text-danger">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+
+
                                     <div class="form-group row">
                                         <div class="col-sm-2 text-center">
                                             <label for="password" class="text-md-right">{{ __('Password') }}: <small style="color:red">*</small></label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" tabindex="3">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" tabindex="5" placeholder="Enter  Password" >
 
                                             @error('password')
                                             <span class="text-danger">
@@ -70,7 +116,9 @@
                                             <label for="password-confirm" class="text-md-right">{{ __('Confirm Password') }}: <small style="color:red">*</small></label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" tabindex="4">
+                                            <input id="password-confirm" type="password" placeholder="Enter Confirm Password" class="form-control"
+                                                   name="password_confirmation" required autocomplete="new-password"
+                                                   tabindex="6">
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -78,7 +126,8 @@
                                             <label>Role: <small style="color:red">*</small></label>
                                         </div>
                                         <div class="col-sm-8">
-                                            <select class="form-control @error ('user_type') is-invalid @enderror" name="user_type" id="user_type" required  >
+                                            <select class="form-control @error ('user_type') is-invalid @enderror"
+                                                    name="user_type" id="user_type" required tabindex="7"  >
                                                 <option value="">Select Role</option>
                                                 @foreach($roles as $rKey=> $role)
                                                     <option value="{{ $rKey}}" {{ ((!empty(old('user_type')) && (old ('user_type')==$rKey))?"selected":'') }}   >{{$role}}</option>

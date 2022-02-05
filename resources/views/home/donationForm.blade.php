@@ -63,7 +63,7 @@
                 <div class="form-group row">
                     <label for="donationAmount" class="col-md-4 col-form-label text-md-right"></label>
                     <div class="col-md-6 text-center ">
-                        <label><u>Donation Information</u></label>
+                        <label><u>Donation & Sponsor Information</u></label>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -83,8 +83,12 @@
                     <div class="col-md-6">
                         <select class="form-control  @error ('sendNumber') is-invalid @enderror" id="sendNumber" name="sendNumber">
                             <option value="">Select Send Number</option>
-                            <option value="1" {{ ((!empty(old('sendNumber')) && (old('sendNumber')==1))
-                            ?"selected":'') }}>01839707645</option>
+                            @if(!empty($fundCoordinator))
+                                @foreach($fundCoordinator as $coOrdinatorKey=>$fundOrdinatorName)
+                            <option value="{{ $coOrdinatorKey }}" {{ ((!empty(old('sendNumber')) && (old('sendNumber')==$coOrdinatorKey))
+                            ?"selected":'') }}>{{ $fundOrdinatorName }}</option>
+                                @endforeach
+                            @endif
                         </select>
                         @error('sendNumber')
                             <span class="invalid-feedback" role="alert">
