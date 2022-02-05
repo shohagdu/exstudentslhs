@@ -12,15 +12,11 @@
                 <div class="form-group row">
                     <div class="offset-md-4 col-md-8">
                         <p class="h4">নির্ধারিত বিকাশ নাম্বারে ডোনেশান পাঠানোর পর নিম্নোক্ত তথ্য গুলো পূরন করুন: </p>
-                        <span style="color:red;font-weight: bold;text-align: justify;"> (বিকাশের মাধ্যমে টাকা পাঠানোর
-                            পর যদি
-                            এই ফরম পূরণ না
-                            করলে,
-                              উক্ত
-                              ডোনেশান
-                              পাঠানোর
-                        প্রক্রিয়া
-                        সম্পন্ন হবে না)</span>
+                        <span style="color:red;font-weight: bold;text-align: justify;"> (বিকাশের মাধ্যমে টাকা পাঠানো
+                            পর পেমেন্ট নিশ্চিত
+                             করার জন্য  নিম্নোক্ত ফরমটি পূরন করা আবশ্যক অন্যথায় উক্ত ডোনেশান পাঠানোর প্রক্রিয়াটি
+                            সঠিকভাবে সম্পন্ন হবে না)
+                        </span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -52,10 +48,10 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="sscBatch" class="col-md-4 col-form-label text-md-right">এস.এস.সি ব্যাচ</label>
+                    <label for="sscBatch" class="col-md-4 col-form-label text-md-right">আপনার এস.এস.সি'র ব্যাচ</label>
                     <div class="col-md-6">
                         <select class="form-control @error ('sscBatch') is-invalid @enderror" id="sscBatch" name="sscBatch">
-                            <option value="">এস.এস.সি ব্যাচ চিহ্নিত করুন</option>
+                            <option value="">এস.এস.সি'র ব্যাচ সিলেক্ট  করুন</option>
                             @for($i=2021;$i>=1962;$i--)
                                 <option value="{{ $i }}" {{ ((!empty(old('sscBatch')) && (old('sscBatch')==$i))?"selected":'') }}>{{ $i
                                 }}</option>
@@ -87,7 +83,7 @@
                     </label>
                     <div class="col-md-6">
                         <select class="form-control  @error ('sendNumber') is-invalid @enderror" id="sendNumber" name="sendNumber">
-                            <option value="">বিকাশ নাম্বার চিহ্নিক করুন</option>
+                            <option value="">বিকাশ নাম্বার সিলেক্ট করুন</option>
                             @if(!empty($fundCoordinator))
                                 @foreach($fundCoordinator as $coOrdinatorKey=>$fundOrdinatorName)
                             <option value="{{ $coOrdinatorKey }}" {{ ((!empty(old('sendNumber')) && (old('sendNumber')==$coOrdinatorKey))
