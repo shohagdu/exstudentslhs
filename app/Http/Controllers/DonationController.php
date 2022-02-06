@@ -83,7 +83,10 @@ class DonationController extends Controller
 
                 foreach ($result as $key => $row) {
                     $btn = '';
-                    $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-eye"></i> View </button>';
+
+                    if($row->approvedStatus==1) {
+                        $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-eye"></i> View </button>';
+                    }
 
 
                     // $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Details"  data-id="' .      $row->id . '" data-original-title="Transaction Details" class="btn btn-success btn-sm viewStockDetail"><i class="fa fa-eye"></i></a>';
