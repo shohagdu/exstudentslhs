@@ -54,8 +54,8 @@
                                 <thead>
                                     <tr>
                                         <th>S/N</th>
-                                        <th>Fund Coordinator Name</th>
-                                        <th>bKash Number</th>
+                                        <th>Coordinator Name</th>
+                                        <th>Received bKash Number</th>
                                         <th class="text-right">Amount</th>
                                     </tr>
                                 </thead>
@@ -111,4 +111,12 @@
 
     <script src="{{ URL::asset('backend/plugins/fullcalendar/fullcalendar.js') }}"></script>
 @endpush
+<style>
+    .table td{
+        font-size: 13px !important;
+    }
+    .table th{
+        font-size: 11px !important;
+    }
+</style>
 

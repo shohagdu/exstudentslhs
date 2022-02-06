@@ -304,6 +304,5 @@
     .table th{
         font-size: 11px !important;
     }
-
 </style>
 
