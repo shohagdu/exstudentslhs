@@ -147,6 +147,14 @@
                     </ul>
                 </li>
             @endif
+            <li class="nav-item">
+                <a href="{{ route('userPass.index') }}" class="nav-link">
+                    <i class="nav-icon fas fa-calculator"></i>
+                    <p>
+                        Change Password
+                    </p>
+                </a>
+            </li>
 
             <li class="nav-item">
                 <a href="{{ route('logout') }}" class="nav-link" onclick="event.preventDefault();document.getElementById

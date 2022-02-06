@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'mobile',
         'mobileBankBkash',
-        'isActiveStatus'
+        'isActiveStatus',
+        'user_type',
     ];
 
     /**

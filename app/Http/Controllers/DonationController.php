@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\TransactionalCOA;
 use App\Models\GeneralLedger;
@@ -52,14 +53,20 @@ class DonationController extends Controller
                 Auth::user()->user_type==4)){
                 $query->where('donarinfos.sendNumber', '=', Auth::id());
             }
+            if(!empty($request->collectionCoOrdinator)){
+                $query->where('donarinfos.sendNumber', '=', $request->collectionCoOrdinator);
+            }
             $total = $query->count();
             $totalFiltered = $total;
 
             $result = $query->skip($request->start)->take($request->length)
                 ->when(($searchText), function($query) use ($searchText) {
                     $query->where(function($q) use ($searchText){
-                        $q->orWhere('name', 'like', '%'.$searchText.'%');
-                        $q->orWhere('mobileNumber', 'like', '%'.$searchText.'%');
+                        $q->orWhere('donarinfos.name', 'like', '%'.$searchText.'%');
+                        $q->orWhere('donarinfos.mobileNumber', 'like', '%'.$searchText.'%');
+                        $q->orWhere('donarinfos.TransactionID', 'like', '%'.$searchText.'%');
+                        $q->orWhere('donarinfos.TransactionMobileNumber', 'like', '%'.$searchText.'%');
+                        $q->orWhere('donarinfos.donationAmount', 'like', '%'.$searchText.'%');
                     });
                 })
                 ->when(($request->status), function($query) use($request)  {
@@ -75,7 +82,6 @@ class DonationController extends Controller
                 $sl = $request->start + 1;
 
                 foreach ($result as $key => $row) {
-                    $editRoute = route('accounting_transaction.capital_investment.edit', ['id' => $row->id]);
                     $btn = '';
                     $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-eye"></i> View </button>';
 
@@ -94,6 +100,7 @@ class DonationController extends Controller
                         'sendNumber'        => $row->mobileBankBkash." (".$row->userName.")",
                         'TransactionID'     => $row->TransactionID,
                         'donationAmount'    => $row->donationAmount,
+                        'TransactionMobileNumber'    => $row->TransactionMobileNumber,
                         'created_at'        => date('d M, Y h:i a',strtotime($row->created_at)),
                         'action'            => $btn,
                     ];
@@ -130,7 +137,8 @@ class DonationController extends Controller
             ],
             'page_title'=> 'Capital Investment'
         ];
-        return view('admin.donation.index',compact('data'));
+        $fundCoordinator    =   User:: select(DB::raw("CONCAT(mobileBankBkash,' (',name,')') AS name"),'id')->where(['user_type'=>3,'status'=>1])->pluck('name','id');
+        return view('admin.donation.index',compact('data','fundCoordinator'));
     }
 
     /**

@@ -37,6 +37,8 @@ class UserController extends Controller
             $query->whereIn('users.status',[1,2]);
             if(!empty($request->user_type)) {
                 $query->where('users.user_type','=',$request->user_type);
+            }else{
+                $query->where('users.user_type','!=',5);
             }
             if(!empty($request->search['value'])) {
                 $searchText = $request->search['value'];
@@ -153,7 +155,7 @@ class UserController extends Controller
 
             $validated_arr['mobile']            = $request->mobileNumber;
             $validated_arr['mobileBankBkash']   = $request->bkashNumber;
-            $validated_arr['user_type']   = $request->user_type;
+            $validated_arr['user_type']         = $request->user_type;
 
             // code exist check
             $where = [
@@ -168,6 +170,7 @@ class UserController extends Controller
                     ->withInput();
             }
         }
+        //dd($validated_arr);
         User::updateOrCreate(['id' => $request->id], $validated_arr);
 
         Toastr::success('User saved successfully');

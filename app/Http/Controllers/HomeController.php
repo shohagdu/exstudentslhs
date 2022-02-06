@@ -75,7 +75,7 @@ class HomeController extends Controller
             'email'                 => $data['mobileNumber'],
             'mobile'                => $data['mobileNumber'],
             'password'              => Hash::make(123456),
-            'user_type'             => 4,
+            'user_type'             => 5,
             'created_at'            => date('Y-m-d H:i:s'),
             'created_by'            => NULL,
             'created_ip'            => $request->ip(),

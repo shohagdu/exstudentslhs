@@ -9,4 +9,10 @@ ALTER TABLE `donarinfos` CHANGE `approvedInfo` `processInfo` TEXT CHARACTER SET 
 
 --ALTER TABLE `users` ADD `mobileBankBkash` VARCHAR(15) NULL DEFAULT NULL AFTER `mobile`;
 
-ALTER TABLE `donarinfos` ADD `TransactionMobileNumber` VARCHAR(15) NULL DEFAULT NULL AFTER `TransactionID`;
+--ALTER TABLE `donarinfos` ADD `TransactionMobileNumber` VARCHAR(15) NULL DEFAULT NULL AFTER `TransactionID`;
+
+
+
+ALTER TABLE `users` CHANGE `user_type` `user_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1=Super Admin 2=admin,3=found Collector,4=Operator,5=Donar';
+
+ALTER TABLE `users` CHANGE `mobile` `mobile` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `coordinator` `coordinator` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `emine` `emine` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `created_ip` `created_ip` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `updated_ip` `updated_ip` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;

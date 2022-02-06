@@ -5,7 +5,9 @@
     <link rel="stylesheet" href="{{ URL::asset('backend/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}"/>
     <link rel="stylesheet" href="{{ URL::asset('backend/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}"/>
 @endpush
-
+@php
+    $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
+@endphp
 @section('content')
     <!-- Main content -->
     <section class="content">
@@ -33,6 +35,19 @@
                                             <option value="3">Declined</option>
                                         </select>
                                     </div>
+                                    @if($userType==1 || $userType==2)
+                                        <div class="col-sm-3">
+                                            <select class="form-control" id="collectionCoOrdinator" name="collectionCoOrdinator">
+                                                <option value="">Collection Coordinator</option>
+                                                @if(!empty($fundCoordinator))
+                                                    @foreach($fundCoordinator as $coOrdinatorKey=>$fundOrdinatorName)
+                                                        <option value="{{ $coOrdinatorKey }}" >{{ $fundOrdinatorName }}</option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    @endif
+
                                 </div>
                             </div>
 
@@ -43,11 +58,12 @@
                                     <th>Doner Name</th>
                                     <th>Mobile Number</th>
                                     <th>SSC Batch</th>
-                                    <th>Send bKash Mobile  </th>
+                                    <th>Received bKash  </th>
                                     <th>Transaction ID </th>
+                                    <th>From bKash</th>
                                     <th>Amount </th>
                                     <th>Created At</th>
-                                    <th style="width: 10%"></th>
+                                    <th style="width: 10%">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -174,7 +190,8 @@
                     url: base_url + "/donation/donationRecord",
                     method: "get",
                     data: function (d) {
-                        (d.status = $("#status").val())
+                        (d.status                   = $("#status").val()),
+                        (d.collectionCoOrdinator    = $("#collectionCoOrdinator").val())
                     },
                 },
                 columns: [
@@ -183,11 +200,12 @@
                     {data: 'mobileNumber', name: 'mobileNumber',class: 'text-left'},
                     {data: 'sscBatch', name: 'sscBatch',class: 'text-center'},
 
-                    {data: 'sendNumber', name: 'sendNumber',class: 'text-center'},
-                    {data: 'TransactionID', name: 'TransactionID',class: 'text-center'},
-                    {data: 'donationAmount', name: 'donationAmount',class: 'text-center'},
+                    {data: 'sendNumber', name: 'sendNumber',class: 'text-left'},
+                    {data: 'TransactionID', name: 'TransactionID',class: 'text-left'},
+                    {data: 'TransactionMobileNumber', name: 'TransactionMobileNumber',class: 'text-left'},
+                    {data: 'donationAmount', name: 'donationAmount',class: 'text-right'},
 
-                    {data: 'created_at', name: 'created_at',class: 'text-center'},
+                    {data: 'created_at', name: 'created_at',class: 'text-left'},
                     {data: 'action', name: 'action', orderable: false, searchable: false,class: 'text-center'},
                 ],
                 "info": true,
@@ -195,7 +213,7 @@
                 "responsive": true,
             });
 
-            $("#status").change(function () {
+            $("#status,#collectionCoOrdinator").change(function () {
                 table.draw();
             });
 
@@ -279,4 +297,13 @@
         }
     </script>
 @endpush
+<style>
+    .table td{
+        font-size: 13px !important;
+    }
+    .table th{
+        font-size: 11px !important;
+    }
+
+</style>
 

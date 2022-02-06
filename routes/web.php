@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserAccessController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ChangePasswordController;
 
 // accounting transaction controller
 use App\Http\Controllers\Admin\accounting_transaction\CapitalInvestment;
@@ -74,12 +75,15 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
         Route::get('create' ,  [UserController::class,'create'])->name('user.create');
         Route::post('destroy' ,  [UserController::class,'destroy'])->name('user.destroy');
         Route::post('update', [UserController::class, 'update'])->name('user.update');
-
-
-        //Route::post('singleDonationInfo' , [DonationController::class,'singleDonationInfo'])->name('donation
-        //.singleDonationInfo');
-       // Route::post('updateDonation', [DonationController::class, 'update'])->name('donation.updateDonation');
     });
+
+    Route::group(['prefix'=>'userPass'],function(){
+        Route::get('index', [ChangePasswordController::class,'index'])->name('userPass.index');
+        Route::post('update', [ChangePasswordController::class,'update'])->name('userPass.update');
+
+    });
+
+
 
 
 
