@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\TransactionalCOA;
 use App\Models\GeneralLedger;
 use App\Models\DonarInfo;
+use App\Models\SmsHistory;
 use Auth;
 use Toastr;
 use DB;
@@ -354,9 +355,17 @@ class DonationController extends Controller
             $updateInfo=[
                 'updated_at'        => date('Y-m-d H:i:s'),
                 'updated_by'        => Auth::id(),
-                'updated_ip'     => $request->ip()
+                'updated_ip'        => $request->ip()
             ];
-
+            $sms ="Dear {$currentData->name}, We, at 'Ex. Student Forum of Lemua High School',  greatly appreciate your donation. Your donation amount {$currentData->donationAmount} has been successfully received. ";
+            $smsHistory=[
+                 'donar_id'         => $currentData->user_id,
+                 'mobile_number'    => (!empty($currentData->mobileNumber)? substr($currentData->mobileNumber, -11):''),
+                 'msg'              => $sms,
+                 'send_status'      => 1,
+                 'ins_date'         => date('Y-m-d H:i:s'),
+                 'ins_by'           => Auth::id()
+            ];
             $data = [
                 'approvedStatus'    => 2,
                 'processInfo'       => json_encode($updateInfo),
@@ -364,6 +373,8 @@ class DonationController extends Controller
                 'updated_by'        => Auth::id(),
                 'updated_ip'     => $request->ip()
             ];
+
+            SmsHistory::create($smsHistory);
             DonarInfo::where('id',$request->update_id)->update($data);
             DB::commit();
             $redirectTo = route('donation.donationRecord');

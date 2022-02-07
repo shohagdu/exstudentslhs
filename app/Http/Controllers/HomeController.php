@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\SmsHistory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +15,10 @@ use App\Models\DonarInfo;
 
 class HomeController extends Controller
 {
-    //    public function __construct()
-    //    {
-    //        dd($this->middleware('guest'));
-    //    }
+//        public function __construct()
+//        {
+//            $this->middleware('guest');
+//        }
 
     public function index(){
         $fundCoordinator    =   User:: select(DB::raw("CONCAT(mobileBankBkash,' (',name,')') AS name"),'id')->where(['user_type'=>3,'status'=>1])->pluck('name','id');
@@ -96,7 +97,77 @@ class HomeController extends Controller
             Session::flash('message', $error);
             return redirect('/');
         }
-
     }
+    public function sendSms(){
+        $getSms=SmsHistory::select('id','mobile_number','msg')->where(['send_status'=>1])->orderBy('id','ASC')->limit(10)->get();
+        if(!empty($getSms[0])){
+            foreach ($getSms as $key=>$row){
+                if(!empty($row->mobile_number)) {
+                    $sendSmsLog[$key] = [
+                        'mobile_no' =>  $row->mobile_number,
+                        'message'   =>  $row->msg,
+                    ];
+                    $url = 'https://www.24bulksmsbd.com/api/smsSendApi';
+                    $data = array(
+                        'customer_id' => 66,
+                        'api_key' => 171574717329433701673050507,
+                        'message' => $row->msg,
+                        'mobile_no' => $row->mobile_number
+                    );
+
+                    $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_POST, true);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+                    $output = curl_exec($curl);
+                    curl_close($curl);
+                    $response=(!empty($output)?json_decode($output,true):'');
+
+                    if(!empty($response)) {
+                        $updateInfo = [
+                            'send_status' => 2,
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ];
+                        if (!empty($response['status']) && $response['status'] == 'ok') {
+                            $updateInfo['success_status'] = 1;
+                            $sendSmsLog[$key]['status'] = (!empty($response['message'])?$response['message']:'').' <> Successfully Send Sms';
+                        } else {
+                            $updateInfo['success_status'] = 2;
+                            $sendSmsLog[$key]['status']= (!empty($response['message'])?$response['message']:''). ' <> Failed to Send Sms';
+                        }
+                        SmsHistory::where('id', $row->id)->update($updateInfo);
+                    }
+
+
+                }
+            }
+
+            if(!empty($sendSmsLog)){
+                $si=1;
+                echo "<table border='1px' rules='all' style='border: 1px solid #eee;'>";
+                    echo "<tr>";
+                        echo "<td>S/N</td>";
+                        echo "<td>Mobile Number</td>";
+                        echo "<td>Message</td>";
+                        echo "<td>Status</td>";
+                    echo "</tr>";
+                    foreach ($sendSmsLog as $log){
+                        echo "<tr>";
+                            echo "<td>".$si++."</td>";
+                            echo "<td>".$log['mobile_no']."</td>";
+                            echo "<td>".$log['message']."</td>";
+                            echo "<td>".$log['status']."</td>";
+                        echo "</tr>";
+                    }
+                echo "</table>";
+            }
+
+        }else{
+            echo "<h1 style='text-align: center;'>No SMS Pending here....</h1>";
+        }
+    }
+
 
 }
