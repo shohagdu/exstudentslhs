@@ -113,3 +113,8 @@ Route::get('/clear', function () {
     Artisan::call('view:clear');
     return "Cleared!";
 });
+
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('cache:clear');
+    return 'Application cache cleared';
+});
