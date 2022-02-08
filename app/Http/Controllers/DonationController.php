@@ -52,11 +52,14 @@ class DonationController extends Controller
             });
             if(isset(Auth::user()->user_type) && (Auth::user()->user_type==2 ||Auth::user()->user_type==3 ||
                 Auth::user()->user_type==4)){
-                $query->where('donarinfos.sendNumber', '=', Auth::id());
-            }
+                    $query->where('donarinfos.sendNumber', '=', Auth::id());
+                }
             if(!empty($request->collectionCoOrdinator)){
                 $query->where('donarinfos.sendNumber', '=', $request->collectionCoOrdinator);
             }
+            $query->when(($request->status), function($query) use($request)  {
+                $query->where('approvedStatus', $request->status);
+            });
             $total = $query->count();
             $totalFiltered = $total;
 
@@ -70,9 +73,7 @@ class DonationController extends Controller
                         $q->orWhere('donarinfos.donationAmount', 'like', '%'.$searchText.'%');
                     });
                 })
-                ->when(($request->status), function($query) use($request)  {
-                    $query->where('approvedStatus', $request->status);
-                })
+
 
                 ->orderBy('id', 'DESC')
                 ->get();
