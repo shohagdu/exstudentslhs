@@ -100,10 +100,16 @@ class HomeController extends Controller
         }
     }
     public function sendSms(){
+
         $getSms=SmsHistory::select('id','mobile_number','msg')->where(['send_status'=>1])->orderBy('id','ASC')->limit(10)->get();
         if(!empty($getSms[0])){
+            $sendSmsLog=[];
             foreach ($getSms as $key=>$row){
                 if(!empty($row->mobile_number)) {
+                    $encodebangla   = utf8_encode($row->msg );
+                    $sms            = utf8_decode($encodebangla);
+
+                    $sendSmsLog[$key]['status']='';
                     $sendSmsLog[$key] = [
                         'mobile_no' =>  $row->mobile_number,
                         'message'   =>  $row->msg,
@@ -112,7 +118,7 @@ class HomeController extends Controller
                     $data = array(
                         'customer_id' => 66,
                         'api_key' => 171574717329433701673050507,
-                        'message' => $row->msg,
+                        'message' => $sms,
                         'mobile_no' => $row->mobile_number
                     );
 
@@ -124,8 +130,9 @@ class HomeController extends Controller
                     curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
                     $output = curl_exec($curl);
                     curl_close($curl);
+                  //  dd($output);
                     $response=(!empty($output)?json_decode($output,true):'');
-
+                 //   dd($response);
                     if(!empty($response)) {
                         $updateInfo = [
                             'send_status' => 2,
@@ -138,9 +145,16 @@ class HomeController extends Controller
                             $updateInfo['success_status'] = 2;
                             $sendSmsLog[$key]['status']= (!empty($response['message'])?$response['message']:''). ' <> Failed to Send Sms';
                         }
-                        SmsHistory::where('id', $row->id)->update($updateInfo);
-                    }
+                    }else{
 
+                        $updateInfo['send_status']    = 2;
+                        $updateInfo['success_status'] = 2;
+                        $updateInfo['updated_at']     = date('Y-m-d H:i:s');
+
+
+                        $sendSmsLog[$key]['status']         = (!empty($response['message'])?$response['message']:''). ' <> Failed to Send Sms(Response NULL)';
+                    }
+                    SmsHistory::where('id', $row->id)->update($updateInfo);
 
                 }
             }
