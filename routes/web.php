@@ -42,7 +42,7 @@ Route::get('/donationProcess' , [HomeController::class,'donationProcess']);
 Route::post('/donationFormAction', function () {
     echo 'hello the world';
     return;
-});
+})->name('donationFormAction');
 
 Route::get('/sendSms' , [HomeController::class,'sendSms'])->name('sendSms');
 
