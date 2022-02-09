@@ -37,13 +37,7 @@ Route::get('/' , [HomeController::class,'index']);
 Route::get('/home' , [HomeController::class,'index']);
 Route::get('/aboutUs' , [HomeController::class,'aboutUs']);
 Route::get('/donationProcess' , [HomeController::class,'donationProcess']);
-//Route::post('/donationFormAction' , [HomeController::class,'donationFormAction'])->name('donationFormAction');
-
-Route::post('/donationFormAction', function () {
-    echo 'hello the world';
-    return;
-})->name('donationFormAction');
-
+Route::post('/donationFormAction' , [HomeController::class,'donationFormAction'])->name('donationFormAction');
 Route::get('/sendSms' , [HomeController::class,'sendSms'])->name('sendSms');
 
 
