@@ -41,8 +41,7 @@
                     href="https://www
             .facebook.com/groups/231794134771154" target="_blank"> Facebook
             Group</a> এর Admin & moderator কে
-            বিষয়টি অবহিত করবেন
-                দিবেন।</span>
+            বিষয়টি অবহিত করবেন।</span>
         </div>
         <div class="donationHead">
             আমাদের বিকাশ (Personal) নাম্বার গুলো:

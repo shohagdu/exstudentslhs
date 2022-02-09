@@ -8,7 +8,6 @@
     <div >
         <div class="card-body">
             <form method="POST" action="{{ route('donationFormAction') }}">
-                @csrf
                 <div class="form-group row">
                     <div class="offset-md-4 col-md-8">
                         <p class="h4">নির্ধারিত বিকাশ নাম্বারে ডোনেশান পাঠানোর পর নিম্নোক্ত তথ্য গুলো পূরন করুন: </p>
@@ -79,7 +78,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sendNumber" class="col-md-4 col-form-label text-md-right">যে বিকাশ নাম্বারে টাকা পাঠাবেন
+                    <label for="sendNumber" class="col-md-4 col-form-label text-md-right">যে বিকাশ নাম্বারে টাকা পাঠিয়েছিলেন তা সিলেক্ট করবেন
                     </label>
                     <div class="col-md-6">
                         <select class="form-control  @error ('sendNumber') is-invalid @enderror" id="sendNumber" name="sendNumber">
@@ -161,6 +160,7 @@
                 </div>
                 <div class="form-group row mb-0">
                     <div class="col-md-2 offset-md-4">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <button type="submit" class="btn btn-primary btn-lg btn-block">
                             Submit
                         </button>
