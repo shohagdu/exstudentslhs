@@ -108,8 +108,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
 
 Route::get('/clear', function () {
     Artisan::call('cache:clear');
-    Artisan::call('config:clear');
-    Artisan::call('config:cache');
+   // Artisan::call('config:clear');
+   // Artisan::call('config:cache');
    // Artisan::call('view:clear');
     return "Cleared!";
 });
