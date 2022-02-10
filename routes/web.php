@@ -67,6 +67,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
         Route::get('donationRecord' , [DonationController::class,'index'])->name('donation.donationRecord');
         Route::post('singleDonationInfo' , [DonationController::class,'singleDonationInfo'])->name('donation.singleDonationInfo');
         Route::post('updateDonation', [DonationController::class, 'update'])->name('donation.updateDonation');
+     //   Route::delete('destroy/{id}', [DonationController::class, 'destroy'])->name('donation.destroy');
+        Route::delete('donationRecord/{id}', [DonationController::class, 'destroy'])->name('donation.donationRecord.delete');
     });
 
     // User Management

@@ -4,15 +4,8 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Dashboard</h3>
-                <div class="card-tools">
-
-                </div>
             </div>
             <div class="card-body">
-
-
-{{--                {{ dd($coOrdinatorWiseCurrentApprovdAmnt) }}--}}
-
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <!-- small box -->
@@ -41,32 +34,51 @@
                         </div>
                     </div>
                 </div>
-                @if(!empty($coOrdinatorWiseCurrentApprovdAmnt))
+                @php
+                    $i                = 1;
+                    $totalAmount      = 0;
+                    $pendingAmount    = 0;
+
+                    $iBatch                = 1;
+                    $totalAmountBatch      = 0;
+
+                    $iDate                  = 1;
+                    $totalAmountDate        = 0;
+
+                @endphp
+                @if(!empty($userType) && ($userType==1 || $userType==2))
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-chart-pie mr-1"></i>
                                 Total Fund Collection Overview
                             </h3>
-                        </div><!-- /.card-header -->
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>S/N</th>
-                                        <th>Coordinator Name</th>
-                                        <th>Received bKash Number</th>
-                                        <th class="text-right">Amount</th>
+                                        <th>Coordinator</th>
+                                        <th>Received bKash</th>
+                                        <th class="text-right">Received</th>
+                                        <th class="text-right">Pending</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $i                = 1;
-                                        $totalAmount      = 0;
-                                    @endphp
+
                                     @if(!empty($coOrdinatorWiseCurrentApprovdAmnt))
                                         @foreach($coOrdinatorWiseCurrentApprovdAmnt as $coOrdinatorInfo)
-                                            @php($totalAmount+=$coOrdinatorInfo->total)
+                                            @php($totalAmount+=$coOrdinatorInfo->ApprovedAmnt)
+                                            @php($pendingAmount+=$coOrdinatorInfo->pendingAmnt)
                                             <tr>
                                                 <td>{{ $i++ }}</td>
                                                 <td>{{ (!empty($coOrdinatorInfo->userName)?$coOrdinatorInfo->userName:'')
@@ -74,12 +86,15 @@
                                                 <td>{{ (!empty($coOrdinatorInfo->mobileBankBkash)
                                                 ?$coOrdinatorInfo->mobileBankBkash:'-')
                                                 }}</td>
-                                                <th  class="text-right">{{ (!empty($coOrdinatorInfo->total)
-                                                ?number_format($coOrdinatorInfo->total,2):'0.00')
+                                                <th  class="text-right">{{ (!empty($coOrdinatorInfo->ApprovedAmnt)
+                                                ?number_format($coOrdinatorInfo->ApprovedAmnt,2):'0.00')
                                                 }}</th>
+                                                <th  class="text-right">{{ (!empty($coOrdinatorInfo->pendingAmnt)
+                                                ?number_format($coOrdinatorInfo->pendingAmnt,2):'0.00')
+                                                }}</th>
+
                                             </tr>
                                         @endforeach
-
                                     @endif
                                 </tbody>
                                 <tfoot>
@@ -87,13 +102,132 @@
                                         <th class="text-center" colspan="3">Total Collection Amount</th>
                                         <th class="text-right" >{{ (!empty($totalAmount)?number_format($totalAmount,2):'0
                                         .00') }}</th>
+                                        <th class="text-right" >{{ (!empty($pendingAmount)?number_format($pendingAmount,2):'0
+                                        .00') }}</th>
+
                                     </tr>
                                 </tfoot>
 
                             </table>
                         </div>
                     </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    Batch Wise Collection Overview
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%">S/N</th>
+                                        <th>Batch</th>
+                                        <th class="text-right">Received</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    @if(!empty($batchWise))
+                                        @foreach($batchWise as $batch)
+                                            @php($totalAmountBatch += $batch->ApprovedAmnt)
+                                            <tr>
+                                                <td>{{ $iBatch++ }}</td>
+                                                <td>{{ (!empty($batch->sscBatch)?$batch->sscBatch:'')
+                                                    }}</td>
+                                                <th  class="text-right">{{ (!empty($batch->ApprovedAmnt)
+                                                    ?number_format($batch->ApprovedAmnt,2):'0.00')
+                                                    }}</th>
+
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th class="text-center" colspan="2">Total  Amount</th>
+                                        <th class="text-right" >{{ (!empty($totalAmountBatch)?number_format($totalAmountBatch,2):'0
+                                            .00') }}</th>
+                                    </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="card pull-right">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    Date Wise Collection Overview
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%">S/N</th>
+                                        <th>Date</th>
+                                        <th class="text-right">Received</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    @if(!empty($dateWise))
+                                        @foreach($dateWise as $dateCol)
+                                            @php($totalAmountDate += $dateCol->ApprovedAmnt)
+                                            <tr>
+                                                <td>{{ $iDate++ }}</td>
+                                                <td>{{ (!empty($dateCol->formatted_created_at)?$dateCol->formatted_created_at:'')
+                                                    }}</td>
+                                                <th  class="text-right">{{ (!empty($dateCol->ApprovedAmnt)
+                                                    ?number_format($dateCol->ApprovedAmnt,2):'0.00')
+                                                    }}</th>
+
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th class="text-center" colspan="2">Total  Amount</th>
+                                        <th class="text-right" >{{ (!empty($totalAmountBatch)?number_format($totalAmountBatch,2):'0
+                                            .00') }}</th>
+                                    </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 @endif
+
+
+
+
+
+
+
             </div>
         </div>
     </section>
@@ -113,10 +247,10 @@
 @endpush
 <style>
     .table td{
-        font-size: 13px !important;
+        font-size: 14px !important;
     }
     .table th{
-        font-size: 11px !important;
+        font-size: 13px !important;
     }
 </style>
 

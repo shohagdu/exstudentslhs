@@ -63,7 +63,7 @@
                                     <th>From bKash</th>
                                     <th>Amount </th>
                                     <th>Created At</th>
-                                    <th style="width: 10%">Action</th>
+                                    <th style="width: 20%">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -221,11 +221,10 @@
 
         $(document).on('click', '.deleteData', function () {
             var id = $(this).data("id");
-
             if (confirm("Are You sure want to delete !")){
                 $.ajax({
                     type: "DELETE",
-                    url: "{{ route('accounting_transaction.capital_investment') }}"+'/'+id,
+                    url: "{{ route('donation.donationRecord') }}"+'/'+id,
                     success: function (data) {
                         if(data.success){
                             toastr.success(data.success);

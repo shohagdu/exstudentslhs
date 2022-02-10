@@ -7,9 +7,8 @@
     </div>
     <div >
         <div class="card-body">
-            <form method="POST" action="{{ route('donationFormAction') }}">
-                @csrf
-                <input type="hidden" name="_token" value="{!! csrf_token() !!}">
+            <form method="post"  action="{{ route('donationFormAction') }}" >
+                {{ csrf_field() }}
                 <div class="form-group row">
                     <div class="offset-md-4 col-md-8">
                         <p class="h4">নির্ধারিত বিকাশ নাম্বারে ডোনেশান পাঠানোর পর নিম্নোক্ত তথ্য গুলো পূরন করুন: </p>

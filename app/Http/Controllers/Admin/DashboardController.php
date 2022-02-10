@@ -46,20 +46,40 @@ class DashboardController extends Controller
                     });
         $pendingAmount=$pendingQuery->sum('donationAmount');
 
+        $coOrdinatorWiseCurrentApprovdAmnt  =   '';
+        $batchWise  =   '';
+        $dateWise   =   '';
+
+
         if($userType==1 || $userType==2 ) {
-            $coOrdinatorWiseCurrentApprovdAmnt = DonarInfo:: where(['donarinfos.isActive' => 1, 'donarinfos.approvedStatus' => 2])
+
+            $coOrdinatorWiseCurrentApprovdAmnt = DonarInfo:: where(['donarinfos.isActive' => 1])
                 ->join('users', function ($join) {
                     $join->on('users.id', '=', 'donarinfos.sendNumber');
                     $join->where('donarinfos.sendNumber', '!=', NULL);
                 })->where('sendNumber', '!=', NULL)
-                ->select
-                ('donarinfos.sendNumber', DB::raw('sum(donarinfos.donationAmount) as total'), 'users.mobileBankBkash', "users.name as userName")
+                ->select('donarinfos.sendNumber',
+                    'users.mobileBankBkash', "users.name as userName")
+                ->selectRaw("SUM(CASE WHEN donarinfos.approvedStatus = 1 THEN donarinfos.donationAmount ELSE 0 END) AS pendingAmnt, ".
+                   "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt")
                 ->groupBy("sendNumber")->get();
-        }else{
-            $coOrdinatorWiseCurrentApprovdAmnt='';
-        }
 
-        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt'));
+            $batchWise = DonarInfo:: where(['donarinfos.isActive' => 1])
+                ->where('sendNumber', '!=', NULL)
+                ->select('donarinfos.sscBatch')
+                ->selectRaw("SUM(CASE WHEN donarinfos.approvedStatus = 1 THEN donarinfos.donationAmount ELSE 0 END) AS pendingAmnt, ".
+                   "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt")
+                ->groupBy("sscBatch")->orderBy('sscBatch','ASC')->having('ApprovedAmnt','>',0)->get();
+
+            $dateWise = DonarInfo:: where(['donarinfos.isActive' => 1])
+                ->where('sendNumber', '!=', NULL)
+                ->select(DB::raw('DATE_FORMAT(donarinfos.created_at, "%d %b, %Y") as formatted_created_at'))
+                ->selectRaw("SUM(CASE WHEN donarinfos.approvedStatus = 1 THEN donarinfos.donationAmount ELSE 0 END) AS pendingAmnt, ".
+                   "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt")
+                ->groupBy(DB::raw('DATE(created_at)'))->orderBy('created_at','ASC')->having('ApprovedAmnt','>',0)
+                ->get();
+        }
+        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType'));
 
     }
 }

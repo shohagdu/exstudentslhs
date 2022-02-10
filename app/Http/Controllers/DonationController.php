@@ -37,6 +37,7 @@ class DonationController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
             $query = DonarInfo::where([
                 [
@@ -88,14 +89,17 @@ class DonationController extends Controller
 
                     if($row->approvedStatus==1) {
                         $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-eye"></i> View </button>';
+
+                        if($userType==1 || $userType==2) {
+                            $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id
+                                . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteData"><i class="fa fa-times"></i> Decline </a>';
+                        }
                     }
 
 
-                    // $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Details"  data-id="' .      $row->id . '" data-original-title="Transaction Details" class="btn btn-success btn-sm viewStockDetail"><i class="fa fa-eye"></i></a>';
+                    //$btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal"
+                    // data-target="#donationModal" data-toggle="tooltip" title="View Donation Modal" onclick="updateDoantionInfo(' . $row->id . ')" id="editUserBasicInfo_' . $row->id . '" ><i class="glyphicon glyphicon-pencil"></i><i class="fa fa-times"></i> Declined </button>';
 
-                 //   $btn .= ' <button href="'.$editRoute.'" data-toggle="tooltip" title="Edit"  data-id="' .   $row->id .'" data-original-title="Edit" class="btn bg-purple btn-sm  editData"><i class="fa fa-edit"></i></a>';
-
-                //    $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteData"><i class="fa fa-trash"></i></a>';
 
                     $data[] = [
                         'sl'                => $sl++,
@@ -399,10 +403,25 @@ class DonationController extends Controller
     {
         DB::beginTransaction();
         try {
-            GeneralLedger::deleteTransaction($id);
+            $updateInfo=[
+                'updated_at'        => date('Y-m-d H:i:s'),
+                'updated_by'        => Auth::id(),
+                'updated_ip'        => $this->ipAddress
+            ];
+            $data = [
+                'approvedStatus'    => 3,
+                'processInfo'       => json_encode($updateInfo),
+                'updated_at'        => date('Y-m-d H:i:s'),
+                'updated_by'        => Auth::id(),
+                'updated_ip'        => $this->ipAddress
+            ];
+
+
+            DonarInfo::where('id',$id)->update($data);
             DB::commit();
-            $redirectTo = route('accounting_transaction.capital_investment');
-            $response = ['success'=>"Transaction Deleted Successful.", 'redirectTo' => $redirectTo];
+            $redirectTo = route('donation.donationRecord');
+            $response = ['success'=>"Donation  Info.  Deleted Successfully.", 'redirectTo' =>
+                $redirectTo];
             \Toastr::success($response['success']);
         }
         catch (\Exception $e){

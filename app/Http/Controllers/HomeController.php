@@ -35,6 +35,7 @@ class HomeController extends Controller
 
 
     public function donationFormAction(request $request){
+
         $validator = Validator::make($request->all(), [
             'name'              => ['required', 'string', 'max:255'],
             'mobileNumber'      => ['required',   'min:11'  ,'numeric'],
