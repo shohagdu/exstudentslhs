@@ -38,6 +38,7 @@ Route::get('/home' , [HomeController::class,'index']);
 Route::get('/aboutUs' , [HomeController::class,'aboutUs']);
 Route::get('/donationProcess' , [HomeController::class,'donationProcess']);
 Route::post('/donationFormAction' , [HomeController::class,'donationFormAction'])->name('donationFormAction');
+Route::get('/events' , [HomeController::class,'events']);
 Route::get('/sendSms' , [HomeController::class,'sendSms'])->name('sendSms');
 
 

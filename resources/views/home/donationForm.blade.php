@@ -2,8 +2,10 @@
 @include('home.navbar')
 <div class="donation-box">
     <div class="col-sm-12 text-center">
-
-{{--        <img src="{{ url('backend/images/logo/exStdLogo_.png') }}" style="height: 140px">--}}
+        <a  href="{{ url('/') }}"><img src="{{ url('backend/images/logo/logo.jpg') }}"
+                                                           style="height: 80px"></a>
+        <a  href="{{ url('/') }}"><img src="{{ url('backend/images/logo/esfLogo.png') }}"
+                                                           style="height: 130px"></a>
     </div>
     <div >
         <div class="card-body">

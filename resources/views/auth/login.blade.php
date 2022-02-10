@@ -20,10 +20,17 @@
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
-    <!-- /.login-logo -->
+    <div class="col-sm-12 text-center">
+        <a  href="{{ url('/') }}"><img src="{{ url('backend/images/logo/logo.png') }}"
+                                       style="height: 80px"></a>
+        <a  href="{{ url('/') }}"><img src="{{ url('backend/images/logo/esfLogo.png') }}"
+                                       style="height: 130px"></a>
+    </div>
     <div class="card card-outline card-info">
         <div class="card-header text-center">
             <a href="#" class="h3"><b>{{env('APP_NAME')}}</b></a>
+            <div class="clearfix"></div>
+            (Lemua High School)
         </div>
         <div class="card-body">
             <p class="login-box-msg">Sign in to start your session</p>

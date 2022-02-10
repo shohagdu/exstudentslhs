@@ -28,6 +28,10 @@ class HomeController extends Controller
     public function aboutUs(){
         return view('home.aboutUs');
     }
+     public function events(){
+        return view('home.events');
+    }
+
     public function donationProcess(){
         $fundCoordinator    =   User:: select(DB::raw("CONCAT(mobileBankBkash,' (',name,')') AS name"),'id')->where(['user_type'=>3,'status'=>1])->select('name','id','mobileBankBkash')->get();
         return view('home.donationProcess', compact('fundCoordinator'));
