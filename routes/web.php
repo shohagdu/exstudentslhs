@@ -8,6 +8,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\BankAccController;
+use App\Http\Controllers\TransactionController;
 
 // accounting transaction controller
 use App\Http\Controllers\Admin\accounting_transaction\CapitalInvestment;
@@ -87,6 +89,17 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
         Route::post('update', [ChangePasswordController::class,'update'])->name('userPass.update');
 
     });
+    Route::group(['prefix'=>'bank'],function(){
+        Route::get('index', [BankAccController::class,'index'])->name('bank.index');
+        Route::get('statement/{id}', [BankAccController::class,'statement'])->name('bank.statement');
+    });
+    Route::group(['prefix'=>'bankTransaction'],function(){
+        Route::get('index', [TransactionController::class,'index'])->name('bankTransaction.index');
+        Route::post('store', [TransactionController::class,'store'])->name('bankTransaction.store');
+        Route::get('edit/{id}', [TransactionController::class,'edit'])->name('bankTransaction.edit');
+    });
+
+
 
 
 

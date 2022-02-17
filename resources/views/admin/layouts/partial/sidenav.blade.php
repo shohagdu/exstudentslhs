@@ -127,6 +127,51 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-cog"></i>
+                        <p> Account Management <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('bankTransaction.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Transaction</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('bank.index') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Bank Account Record</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                <!--
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user-cog"></i>
+                        <p> Expense <i class="right fas fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('user.userRecord') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Expense Record</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('user.userRecord') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Expense Category</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                -->
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user-cog"></i>
                         <p> User Management <i class="right fas fa-angle-left"></i></p>
                     </a>
                     <ul class="nav nav-treeview">
@@ -136,14 +181,6 @@
                                 <p> User Record</p>
                             </a>
                         </li>
-                        <!--
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Add Permission</p>
-                            </a>
-                        </li>
-                        -->
                     </ul>
                 </li>
             @endif
