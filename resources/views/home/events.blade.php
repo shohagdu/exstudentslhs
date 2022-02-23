@@ -22,7 +22,7 @@
             <div style="text-decoration: underline 3px dotted green;"> সম্ভাব্য তারিখ</div>
             ডোনেশন পাঠানোর সম্ভাব্য শেষ তারিখঃ <span class="color-green"> ১০ মার্চ ২০২২ ইং</span>
             <div class="clearfix"></div>
-            অনুষ্ঠান করার সম্ভাব্য তারিখঃ <span class="color-green"> ১৮ মার্চ ২০২২ ইং</span>
+            অনুষ্ঠান করার সম্ভাব্য তারিখঃ <span class="color-green"> ১৯ মার্চ ২০২২ ইং (শনিবার)</span>
         </div>
 
     </div>
