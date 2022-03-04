@@ -107,6 +107,7 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+       // dd($request->all());
         $validator = Validator::make($request->all(), [
             'bankID'              => ['required', 'numeric'],
             'transDate'      => ['required'],
@@ -116,20 +117,25 @@ class TransactionController extends Controller
             'transDate.required'                 => 'Trans. Date',
             'Amount.required'                    => 'Amount is required',
         ]);
+        $error_array=array();
         if ($validator->fails()) {
-            return redirect('bankTransaction/index')
-                ->withErrors($validator)
-                ->withInput();
+            foreach ($validator->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages;
+            }
+
+            $response = ['error'=> $error_array];
+            return response()->json($response);
         }
         DB::beginTransaction();
         try {
             $transactionId = TransactionModel ::getTransactionId();
+
             $data_arr = [
                 'transCode'     => $transactionId,
-                'bank_id'       => $request->invest_amount,
-                'trans_date'    => $request->transDate,
+                'bank_id'       =>  $request->invest_amount,
+                'trans_date'    => (!empty($request->transDate)?date('Y-m-d',strtotime($request->transDate)):''),
                 'type'          => 1,
-                'remarks'        => $request->Remarks,
+                'remarks'       => $request->Remarks,
                 'receiptNo'     => $request->ReceiptNo,
                 'debit_amount'  => $request->Amount,
                 'approved_status' => 2,
@@ -142,7 +148,7 @@ class TransactionController extends Controller
                 'updated_ip' => $request->ip(),
 
             ];
-
+          //  dd($data_arr);
             TransactionModel::insert($data_arr);
 
 

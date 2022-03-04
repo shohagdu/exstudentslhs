@@ -58,6 +58,10 @@ class DonationController extends Controller
             if(!empty($request->collectionCoOrdinator)){
                 $query->where('donarinfos.sendNumber', '=', $request->collectionCoOrdinator);
             }
+            if(!empty($request->sscBatch)){
+                $query->where('donarinfos.sscBatch', '=', $request->sscBatch);
+            }
+
             $query->when(($request->status), function($query) use($request)  {
                 $query->where('approvedStatus', $request->status);
             });
@@ -72,6 +76,7 @@ class DonationController extends Controller
                         $q->orWhere('donarinfos.TransactionID', 'like', '%'.$searchText.'%');
                         $q->orWhere('donarinfos.TransactionMobileNumber', 'like', '%'.$searchText.'%');
                         $q->orWhere('donarinfos.donationAmount', 'like', '%'.$searchText.'%');
+                        $q->orWhere('donarinfos.sscBatch', 'like', '%'.$searchText.'%');
                     });
                 })
 

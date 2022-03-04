@@ -35,6 +35,16 @@
                                             <option value="3">Declined</option>
                                         </select>
                                     </div>
+                                    <div class="col-sm-3">
+                                        <select class="form-control " id="sscBatch" name="sscBatch">
+                                            <option value="">Select Batch</option>
+                                            @for($i=2021;$i>=1962;$i--)
+                                                <option value="{{ $i }}" {{ ((!empty(old('sscBatch')) && (old('sscBatch')==$i))?"selected":'') }}>{{ $i
+                                }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+
                                     @if($userType==1 || $userType==2)
                                         <div class="col-sm-3">
                                             <select class="form-control" id="collectionCoOrdinator" name="collectionCoOrdinator">
@@ -191,6 +201,7 @@
                     method: "get",
                     data: function (d) {
                         (d.status                   = $("#status").val()),
+                        (d.sscBatch                 = $("#sscBatch").val()),
                         (d.collectionCoOrdinator    = $("#collectionCoOrdinator").val())
                     },
                 },
@@ -213,7 +224,7 @@
                 "responsive": true,
             });
 
-            $("#status,#collectionCoOrdinator").change(function () {
+            $("#status,#collectionCoOrdinator,#sscBatch").change(function () {
                 table.draw();
             });
 

@@ -244,7 +244,7 @@
             $("#formOutput").html('');
         }
         function saveTransaction(){
-            $(".submit_btn").attr("disabled", true);
+            //$(".submit_btn").attr("disabled", true);
             $("#formOutput").html('');
             $.ajax({
                 type: "POST",
@@ -252,6 +252,7 @@
                 data: $("#transactionForm").serialize() ,
                 'dataType': 'json',
                 success: function (data) {
+                    console.log(data);
                     $(".submit_btn").attr("disabled", false);
                     if(data.success){
                         $('#transactionModal').modal('toggle');
@@ -259,7 +260,15 @@
                         table.draw();
                     }
                     else{
-                        toastr.error(data.error);
+                        if (data.error.length > 0) {
+                            var error_html = '';
+                            for (var count = 0; count < data.error.length; count++) {
+                                error_html += '<div class="alert alert-danger">' + data.error[count] + '</div> <br/>';
+                            }
+                            toastr.error(error_html);
+                        }else {
+                            toastr.error(data.error);
+                        }
                     }
 
 
