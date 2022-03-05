@@ -20,6 +20,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
             $query = TransactionModel::where([
                 [
@@ -28,6 +29,10 @@ class TransactionController extends Controller
                     '0'
                 ],[
                     'is_active',
+                    '=',
+                    '1'
+                ],[
+                    'type',
                     '=',
                     '1'
                 ]
@@ -54,13 +59,22 @@ class TransactionController extends Controller
                 $sl = $request->start + 1;
 
                 foreach ($result as $key => $row) {
-                    $editRoute = url('admin/bankTransaction/edit/'.$row->id);
                     $btn = '';
-                  //  $btn .= ' <a href="'.$editRoute.'" data-toggle="tooltip" title="Statement"  data-id="' .  $row->id . '" class="btn bg-purple btn-sm "><i class="fa fa-share-alt"></i></a>';
+                    if($row->approved_status==2) {
+                        $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#transactionModal" data-toggle="tooltip" title="Edit  Info" onclick="updateInvInfo(' . $row->id . ')" id="edit_' . $row->id . '" ><i class="fa fa-edit"></i> Edit </button>';
+
+                        if($userType==1 || $userType==2) {
+                            $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id
+                                . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteData"><i class="fa fa-times"></i> Delete </a>';
+                        }
+                    }
+                    $attachment=(!empty($row->attachmentInfo)?$row->attachmentInfo:'');
+                    $transCode=!empty($attachment)?"<a href='".url($attachment)."' target='_blank'>".$row->transCode
+                        ."</a>":$row->transCode;
 
                     $data[] = [
                         'sl'                        => $sl++,
-                        'transCode'                 => $row->transCode,
+                        'transCode'                 => $transCode,
                         'trans_date'                => (!empty($row->trans_date)?date('d M ,Y',strtotime
                         ($row->trans_date)):''),
                         'remarks'                   => $row->remarks,
@@ -114,7 +128,7 @@ class TransactionController extends Controller
             'Amount'          => ['required', 'numeric'],
         ],[
             'bankID.required'                    => 'Bank ID is required',
-            'transDate.required'                 => 'Trans. Date',
+            'transDate.required'                 => 'Trans. Date is required',
             'Amount.required'                    => 'Amount is required',
         ]);
         $error_array=array();
@@ -122,47 +136,116 @@ class TransactionController extends Controller
             foreach ($validator->messages()->getMessages() as $field_name => $messages) {
                 $error_array[] = $messages;
             }
-
             $response = ['error'=> $error_array];
             return response()->json($response);
         }
-        DB::beginTransaction();
-        try {
-            $transactionId = TransactionModel ::getTransactionId();
 
-            $data_arr = [
-                'transCode'     => $transactionId,
-                'bank_id'       =>  $request->invest_amount,
-                'trans_date'    => (!empty($request->transDate)?date('Y-m-d',strtotime($request->transDate)):''),
-                'type'          => 1,
-                'remarks'       => $request->Remarks,
-                'receiptNo'     => $request->ReceiptNo,
-                'debit_amount'  => $request->Amount,
-                'approved_status' => 2,
-                'is_active' => 1,
-                'created_at' => date('Y-m-d H:i:s'),
-                'created_by' => Auth::id(),
-                'created_ip' => $request->ip(),
-                'updated_at' => date('Y-m-d H:i:s'),
-                'updated_by' => Auth::id(),
-                'updated_ip' => $request->ip(),
-
-            ];
-          //  dd($data_arr);
-            TransactionModel::insert($data_arr);
+        $destinationImagePath = 'uploads/transReceipt';
+        $extensionArray = ['jpg', 'jpeg', 'png', 'pdf', 'PNG', 'JPG', 'JPEG', 'PDF'];
 
 
-            DB::commit();
-            $redirectTo = route('bankTransaction.index');
-            $response = ['success'=>"Transaction Saved Successful.", 'redirectTo' => $redirectTo];
-            \Toastr::success($response['success']);
+        if (!empty($request->file('invoice'))) {
+            $image = $request->file('invoice');
+            $extension = $image->getClientOriginalExtension();
+
+            $invoiceFile = $image->getSize();
+            $invoiceFileMB = number_format($invoiceFile / 1048576, 2);
+            if ($invoiceFileMB > 15) {
+                $error_array[] = 'File Attachment Maximum size 15 MB ';
+                $response = ['error'=> $error_array];
+                return response()->json($response);
+            }
+            if (!in_array($extension, $extensionArray)) {
+                $error_array[] = 'File Extension  should be jpg, jpeg, png or pdf ';
+                $response = ['error'=> $error_array];
+                return response()->json($response);
+            }
+            if ($invoiceFileMB <= 5 && in_array($extension, $extensionArray)) {
+                $file_name = "inv_" .time() .'.' . $extension;
+                $image->getClientOriginalName();
+                $image->move($destinationImagePath, $file_name);
+                $invAttachment = $destinationImagePath . '/' . $file_name;
+            } else {
+                $invAttachment = '';
+            }
+        } elseif (!empty($request->invoiceOld)) {
+            $invAttachment = $request->invoiceOld;
+        } else {
+            $invAttachment = '';
         }
-        catch (\Exception $e){
-            DB::rollback();
-            $response = ['error'=>$e->getMessage()];
-        }
 
-        return response()->json($response);
+        if(empty($request->update_id)) {
+            DB::beginTransaction();
+            try {
+                $transactionId = TransactionModel::getTransactionId();
+                $data_arr = [
+                    'transCode' => $transactionId,
+                    'bank_id' => $request->bankID,
+                    'trans_date' => (!empty($request->transDate) ? date('Y-m-d', strtotime($request->transDate)) : ''),
+                    'type' => 1,
+                    'remarks' => $request->Remarks,
+                    'receiptNo' => $request->ReceiptNo,
+                    'debit_amount' => $request->Amount,
+                    'attachmentInfo' => $invAttachment,
+                    'approved_status' => 2,
+                    'is_active' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'created_by' => Auth::id(),
+                    'created_ip' => $request->ip(),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => Auth::id(),
+                    'updated_ip' => $request->ip(),
+
+                ];
+                //  dd($data_arr);
+                TransactionModel::insert($data_arr);
+
+
+                DB::commit();
+                $redirectTo = route('bankTransaction.index');
+                $response = ['success' => "Transaction Saved Successful.", 'redirectTo' => $redirectTo];
+                \Toastr::success($response['success']);
+            } catch (\Exception $e) {
+                DB::rollback();
+                $response = ['error' => $e->getMessage()];
+            }
+
+            return response()->json($response);
+        }else{
+            DB::beginTransaction();
+            try {
+                $transactionId = TransactionModel::getTransactionId();
+                $data_arr = [
+                    'transCode' => $transactionId,
+                    'bank_id' => $request->bankID,
+                    'trans_date' => (!empty($request->transDate) ? date('Y-m-d', strtotime($request->transDate)) : ''),
+                    'type' => 1,
+                    'remarks' => $request->Remarks,
+                    'receiptNo' => $request->ReceiptNo,
+                    'debit_amount' => $request->Amount,
+                    'attachmentInfo' => $invAttachment,
+                    'approved_status' => 2,
+                    'is_active' => 1,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => Auth::id(),
+                    'updated_ip' => $request->ip(),
+
+                ];
+                //  dd($data_arr);
+                TransactionModel::where('id',$request->update_id)->update($data_arr);
+
+
+                DB::commit();
+                $redirectTo = route('bankTransaction.index');
+                $response = ['success' => "Transaction Update Successful.", 'redirectTo' => $redirectTo];
+                \Toastr::success($response['success']);
+            } catch (\Exception $e) {
+                DB::rollback();
+                $response = ['error' => $e->getMessage()];
+            }
+
+            return response()->json($response);
+        }
     }
 
     /**

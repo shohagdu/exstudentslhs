@@ -8,6 +8,7 @@
 @php
     $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
     $bankInfo=(!empty($data['bankInfo'])?$data['bankInfo']:'');
+    $expenseCtg=(!empty($data['expenseCtg'])?$data['expenseCtg']:'');
 @endphp
 @section('content')
     <!-- Main content -->
@@ -21,10 +22,10 @@
                             ?$data['page_title']:'')
                             }}</h3>
                             <div class="card-tools">
-                                <button class="btn btn-primary btn-sm" onclick="addTransaction()"  data-toggle="modal"
-                                        data-target="#transactionModal">
+                                <button class="btn btn-primary btn-sm" onclick="addExpense()"  data-toggle="modal"
+                                        data-target="#expenseModal">
                                     <i class="fa fa-plus-circle"></i> Add
-                                    Transaction</button>
+                                    Expense</button>
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -36,8 +37,9 @@
                                     <th>Trans. Code</th>
                                     <th>Trans. Date</th>
                                     <th>Remarks</th>
-                                    <th>Receipt ID  </th>
-                                    <th>Debit Amount  </th>
+                                    <th>Expense Ctg  </th>
+                                    <th>Expense By  </th>
+                                    <th>Credit Amount  </th>
                                     <th style="width: 20%">Action</th>
                                 </tr>
                                 </thead>
@@ -53,13 +55,13 @@
             </div>
         </div>
     </section>
-    <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="expenseModal" tabindex="-1" role="dialog" aria-labelledby="expenseModal"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="col-md-10">
-                        <h6 class="modal-title" id="exampleModalLabel">Transaction Information</h6>
+                        <h6 class="modal-title" id="exampleModalLabel">Expense Information</h6>
                     </div>
                     <div class="col-sm-2">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -69,7 +71,7 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="modal-body">
-                    <form  action="" id="transactionForm" class="form-horizontal" method="post">
+                    <form  action="" id="expenseForm" class="form-horizontal" method="post">
                         <div class="form-group row">
                             <label class="control-label col-sm-4 text-right" for="bankID">Bank</label>
                             <div class="col-sm-8">
@@ -81,11 +83,7 @@
                                         @endforeach
                                     @endif
                                 </select>
-                                @error('bankID')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+
                             </div>
                         </div>
                         <div class="form-group row">
@@ -96,10 +94,17 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="ReceiptNo">Receipt No</label>
+                            <label class="control-label col-sm-4 text-right" for="ReceiptNo">Expense Category</label>
                             <div class="col-sm-8">
-                                <input type="text" name="ReceiptNo" id="ReceiptNo" placeholder="Enter Receipt No"
+                                <select name="expense_ctg" id="expense_ctg"
                                        class="form-control">
+                                    <option value="">Select Category</option>
+                                    @if(!empty($expenseCtg))
+                                        @foreach($expenseCtg as $key => $val)
+                                            <option value="{{ $key }}">{{ $val }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -111,13 +116,20 @@
                         </div>
 
                         <div class="form-group row">
+                            <label class="control-label col-sm-4 text-right" for="Amount">Expense By</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="expenseBy" id="expenseBy" placeholder="Enter Expense By"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="control-label col-sm-4 text-right" for="Amount">Amount</label>
                             <div class="col-sm-8">
                                 <input type="text" name="Amount" id="Amount" placeholder="Enter Amount" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="Amount">Attach Receipt</label>
+                            <label class="control-label col-sm-4 text-right" for="Amount">Attach Invoice</label>
                             <div class="col-sm-8">
                                 <input type="file" name="invoice" id="invoice"
                                        class="form-control">
@@ -126,6 +138,7 @@
 
                             </div>
                         </div>
+
 
                         <div class="form-group row">
                             <div class="col-sm-4">
@@ -178,7 +191,7 @@
                 },
                 serverSide: true,
                 ajax: {
-                    url: base_url + "/bankTransaction/index",
+                    url: base_url + "/expenseRecord",
                     method: "get",
                 },
                 columns: [
@@ -186,8 +199,9 @@
                     {data: 'transCode', name: 'transCode',class: 'text-left'},
                     {data: 'trans_date', name: 'trans_date',class: 'text-left'},
                     {data: 'remarks', name: 'remarks',class: 'text-left'},
-                    {data: 'receiptNo', name: 'receiptNo',class: 'text-left'},
-                    {data: 'debit_amount', name: 'debit_amount',class: 'text-left'},
+                    {data: 'expenseCtg', name: 'expense_ctg',class: 'text-left'},
+                    {data: 'expenseBy', name: 'expenseBy',class: 'text-left'},
+                    {data: 'credit_amount', name: 'credit_amount',class: 'text-left'},
                     {data: 'action', name: 'action', orderable: false, searchable: false,class: 'text-center'},
                 ],
                 "info": true,
@@ -217,10 +231,10 @@
 
             }
         });
-        function updateInvInfo(id){
+        function updateExpenseInfo(id){
             $("#update_id").val('');
             $("#submitBtnLabel").html('Update');
-            $('#transactionForm')[0].reset();
+            $('#expenseForm')[0].reset();
             $(".submit_btn").attr("disabled", true);
             $("#formOutput").html('');
             $.ajax({
@@ -234,30 +248,31 @@
                         $(".submit_btn").attr("disabled", false);
                         $("#update_id").val(data.id);
                         $("#bankID").val(data.bank_id);
-                        $("#transDate").val(data.transDataTitle);
-                        $("#ReceiptNo").val(data.receiptNo);
+                        $("#transDataTitle").val(data.trans_date);
+                        $("#expense_ctg").val(data.expense_ctg);
                         $("#Remarks").val(data.remarks);
                         $("#expenseBy").val(data.transBy);
                         $("#invoiceOld").val(data.attachmentInfo);
-                        $("#Amount").val(data.debit_amount);
+                        $("#Amount").val(data.credit_amount);
                     } else {
 
                     }
                 }
             });
         }
-        function addTransaction(){
-            $('#transactionForm')[0].reset();
+        function addExpense(){
+            $('#expenseForm')[0].reset();
             $("#submitBtnLabel").html('Save');
             $("#formOutput").html('');
         }
-        $("#transactionForm").on('submit', (function (e) {
+
+        $("#expenseForm").on('submit', (function (e) {
             $(".submit_btn").attr("disabled", true);
             var formData = new FormData(this)
 
             e.preventDefault();
             $.ajax({
-                url: base_url + "/bankTransaction/store",
+                url: base_url + "/expenseStore",
                 type: "POST",
                 data: formData,
                 contentType: false,
@@ -267,7 +282,7 @@
                 success: function (data) {
                     $(".submit_btn").attr("disabled", false);
                     if(data.success){
-                        $('#transactionModal').modal('toggle');
+                        $('#expenseModal').modal('toggle');
                         toastr.success(data.success);
                         table.draw();
                     }

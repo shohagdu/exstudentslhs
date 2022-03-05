@@ -20,14 +20,19 @@ class BankAccController extends Controller
     {
         if ($request->ajax()) {
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
-            $query = BankAccModel::where([
+            $query = BankAccModel::select('*')->where([
                 [
                     'softDelete',
                     '=',
                     '0'
                 ]
-            ])->
-            select('*');
+            ])
+            ->leftJoinSub(self::payableDebitSubQuery(6), 'PC', function($pcs) {
+                $pcs->on('PC.bank_id', 'tbl_pos_accounts.id');
+            })
+            ->leftJoinSub(self::payableCrditSubQuery(6), 'credit', function($credits) {
+                $credits->on('credit.bank_id', 'tbl_pos_accounts.id');
+            });
 
             $total = $query->count();
             $totalFiltered = $total;
@@ -40,8 +45,6 @@ class BankAccController extends Controller
                 })
                 ->orderBy('id', 'DESC')
                 ->get();
-
-
             $data = [];
             if(count($result) > 0) {
                 $sl = $request->start + 1;
@@ -51,13 +54,17 @@ class BankAccController extends Controller
                     $btn = '';
                     $btn .= ' <a href="'.$editRoute.'" data-toggle="tooltip" title="Statement"  data-id="' . $row->id
                         . '" class="btn bg-purple btn-sm "><i class="fa fa-share-alt"></i></a>';
+                    $bank_deposite_debit=(!empty($row->bank_deposite_debit)?$row->bank_deposite_debit:'0.00');
+                    $payable_credit=(!empty($row->payable_credit)?$row->payable_credit:'0.00');
+                    $balance=(!empty($bank_deposite_debit-$payable_credit)?number_format
+                    ($bank_deposite_debit-$payable_credit,2):'0.00');
 
                     $data[] = [
                         'sl'                        => $sl++,
                         'accountName'               => $row->accountName,
                         'accountNumber'             => $row->accountNumber,
                         'accountBranchName'         => $row->accountBranchName,
-                        'currentBalance'            => 0.00,
+                        'currentBalance'            => $balance,
                         'action'        => $btn,
                     ];
                 }
@@ -77,6 +84,25 @@ class BankAccController extends Controller
         ];
         return view('admin.bank.index',compact('data'));
     }
+    public static function payableDebitSubQuery(int $payableChartOfId)
+    {
+        return TransactionModel::selectRaw('bank_id, SUM(debit_amount) AS bank_deposite_debit')
+            ->whereNotNull('debit_amount')
+            ->where('approved_status',2)
+            ->where('is_active',1)
+            ->where('bank_id', $payableChartOfId)
+            ->groupBy('bank_id');
+    }
+    public static function payableCrditSubQuery(int $payableChartOfId)
+    {
+        return TransactionModel::selectRaw('bank_id, SUM(credit_amount) AS payable_credit')
+            ->whereNotNull('credit_amount')
+            ->where('approved_status',2)
+            ->where('is_active',1)
+            ->where('bank_id', $payableChartOfId)
+            ->groupBy('bank_id');
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -146,8 +172,14 @@ class BankAccController extends Controller
     public function statement($id)
     {
         $bankInfo       = BankAccModel::where(['id'=>$id])->first();
-        $bankStatement  = TransactionModel::where(['bank_id'=>$id,'is_active'=>1,'approved_status'=>2])->orderBy
+        $bankStatement  = TransactionModel::select("transaction_info.*","all_settings.title as expenseCtgTitle")
+            ->where(['bank_id'=>$id,'transaction_info.is_active'=>1,'approved_status'=>2])
+            ->leftJoin('all_settings', function($join) {
+                $join->on('all_settings.id', '=', 'transaction_info.expense_ctg');
+            })
+            ->orderBy
         ('trans_date','ASC')->get();
+
         $transType      = TransactionModel::transType();
         $data = [
             'page_title'        => 'Bank Account Statement',

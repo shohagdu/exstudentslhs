@@ -145,7 +145,7 @@
 
                     </ul>
                 </li>
-                <!--
+
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-cog"></i>
@@ -153,13 +153,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('user.userRecord') }}" class="nav-link">
+                            <a href="{{ route('expenseRecord') }}" class="nav-link ">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p> Expense Record</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('user.userRecord') }}" class="nav-link">
+                            <a href="{{ route('expenseCtg') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p> Expense Category</p>
                             </a>
@@ -167,7 +167,15 @@
 
                     </ul>
                 </li>
-                -->
+                <li class="nav-item">
+                    <a href="{{ route('participantsRecord') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>
+                            Participants Record
+                        </p>
+                    </a>
+                </li>
+
 
                 <li class="nav-item">
                     <a href="#" class="nav-link">

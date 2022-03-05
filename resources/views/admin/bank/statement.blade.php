@@ -58,6 +58,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $balance='0.00';
+                                        $tDebit='0.00';
+                                        $tCredit='0.00';
+                                    @endphp
                                     @if(!empty($bankStatement))
                                         @foreach($bankStatement as $statement)
                                             <tr>
@@ -75,10 +80,17 @@
                                                 ?$statement->debit_amount:'0.00') }}</td>
                                                  <td class="text-right">{{ (!empty($statement->credit_amount)
                                                  ?$statement->credit_amount:'0.00') }}</td>
-                                                <td class="text-right">{{
-                                                !empty($statement->debit_amount-$statement->credit_amount)
-                                                ?number_format(($statement->debit_amount-$statement->credit_amount),
-                                                2):'0.00' }}</td>
+                                                <td class="text-right">
+                                                    @php
+                                                        $balance+=(!empty
+                                                   ($statement->debit_amount-$statement->credit_amount)
+                                                ?($statement->debit_amount-$statement->credit_amount):'0.00');
+echo (!empty($balance)? number_format($balance,2):'0.00');
+                                                    $tDebit+=$statement->debit_amount;
+                                                    $tCredit+=$statement->credit_amount;
+
+                                                    @endphp
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @else
@@ -87,6 +99,16 @@
                                         </tr>
                                     @endif
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="6" class="text-center">Total Summery</th>
+                                        <th  class="text-right">{{ !empty($tDebit)?number_format($tDebit,2):'0.00' }}</td>
+                                        <th  class="text-right">{{ !empty($tCredit)?number_format($tCredit,2):'0.00' }}</td>
+                                        <th  class="text-right">{{ !empty($balance)?number_format($balance,2):'0.00' }}</td>
+
+
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <!-- /.card-body -->

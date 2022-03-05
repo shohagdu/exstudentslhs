@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\BankAccController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExpenseCtgController;
+use App\Http\Controllers\EventParticipantsController;
 
 // accounting transaction controller
 use App\Http\Controllers\Admin\accounting_transaction\CapitalInvestment;
@@ -98,6 +101,25 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
         Route::post('store', [TransactionController::class,'store'])->name('bankTransaction.store');
         Route::get('edit/{id}', [TransactionController::class,'edit'])->name('bankTransaction.edit');
     });
+
+
+    Route::get('expenseRecord', [ExpenseController::class,'index'])->name('expenseRecord');
+    Route::post('expenseStore', [ExpenseController::class,'store'])->name('expenseStore');
+    Route::post('expenseShow', [ExpenseController::class,'show'])->name('expenseShow');
+    Route::delete('expenseDelete/{id}', [ExpenseController::class, 'destroy'])->name('expenseDelete');
+
+
+    Route::get('expenseCtg', [ExpenseCtgController::class,'index'])->name('expenseCtg');
+    Route::post('expenseCtgStore', [ExpenseCtgController::class,'store'])->name('expenseCtgStore');
+    Route::post('expenseCtgShow', [ExpenseCtgController::class,'show'])->name('expenseCtgShow');
+
+    Route::get('participantsRecord', [EventParticipantsController::class,'index'])->name('participantsRecord');
+
+
+
+
+
+
 
 
 

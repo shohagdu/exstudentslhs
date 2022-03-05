@@ -8,6 +8,7 @@
 @php
     $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
     $bankInfo=(!empty($data['bankInfo'])?$data['bankInfo']:'');
+    $expenseCtg=(!empty($data['expenseCtg'])?$data['expenseCtg']:'');
 @endphp
 @section('content')
     <!-- Main content -->
@@ -21,10 +22,10 @@
                             ?$data['page_title']:'')
                             }}</h3>
                             <div class="card-tools">
-                                <button class="btn btn-primary btn-sm" onclick="addTransaction()"  data-toggle="modal"
-                                        data-target="#transactionModal">
+                                <button class="btn btn-primary btn-sm" onclick="addExpenseCtg()"  data-toggle="modal"
+                                        data-target="#expenseCtgModal">
                                     <i class="fa fa-plus-circle"></i> Add
-                                    Transaction</button>
+                                    Expense Category</button>
                             </div>
                         </div>
                         <!-- /.card-header -->
@@ -33,11 +34,8 @@
                                 <thead>
                                 <tr>
                                     <th>SL</th>
-                                    <th>Trans. Code</th>
-                                    <th>Trans. Date</th>
-                                    <th>Remarks</th>
-                                    <th>Receipt ID  </th>
-                                    <th>Debit Amount  </th>
+                                    <th>Title</th>
+                                    <th>Status</th>
                                     <th style="width: 20%">Action</th>
                                 </tr>
                                 </thead>
@@ -53,13 +51,13 @@
             </div>
         </div>
     </section>
-    <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="expenseCtgModal" tabindex="-1" role="dialog" aria-labelledby="expenseModal"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="col-md-10">
-                        <h6 class="modal-title" id="exampleModalLabel">Transaction Information</h6>
+                        <h6 class="modal-title" id="exampleModalLabel">Expense Category Information</h6>
                     </div>
                     <div class="col-sm-2">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -69,61 +67,22 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="modal-body">
-                    <form  action="" id="transactionForm" class="form-horizontal" method="post">
+                    <form  action="" id="expenseCtgForm" class="form-horizontal" method="post">
                         <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="bankID">Bank</label>
+                            <label class="control-label col-sm-4" for="Amount">Expense Category</label>
                             <div class="col-sm-8">
-                                <select name="bankID" id="bankID" class="form-control">
-                                    <option value="">Select Bank</option>
-                                    @if(!empty($bankInfo))
-                                        @foreach($bankInfo as $key => $val)
-                                            <option value="{{ $key }}">{{ $val }}</option>
-                                        @endforeach
-                                    @endif
+                                <input type="text" name="expenseCtgTtile" id="expenseCtgTtile" placeholder="Enter Category"
+                                       class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-4" for="Amount">Status</label>
+                            <div class="col-sm-8">
+                                <select type="text" name="isActive" id="isActive"
+                                       class="form-control">
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
                                 </select>
-                                @error('bankID')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="transDate">Date</label>
-                            <div class="col-sm-8">
-                                <input type="text" name="transDate" value="{{ date('d-m-Y') }}" id="transDate"
-                                       class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="ReceiptNo">Receipt No</label>
-                            <div class="col-sm-8">
-                                <input type="text" name="ReceiptNo" id="ReceiptNo" placeholder="Enter Receipt No"
-                                       class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="Remarks">Remarks</label>
-                            <div class="col-sm-8">
-                                <textarea type="text" name="Remarks" placeholder="Enter Remarks" id="Remarks"
-                                          class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="Amount">Amount</label>
-                            <div class="col-sm-8">
-                                <input type="text" name="Amount" id="Amount" placeholder="Enter Amount" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="control-label col-sm-4 text-right" for="Amount">Attach Receipt</label>
-                            <div class="col-sm-8">
-                                <input type="file" name="invoice" id="invoice"
-                                       class="form-control">
-                                <input type="hidden" name="invoiceOld" id="invoiceOld"
-                                       class="form-control">
-
                             </div>
                         </div>
 
@@ -133,7 +92,7 @@
                             </div>
                             <div class="col-sm-8">
                                 <input type="hidden" name="update_id" id="update_id">
-                                <button type="submit" class="btn btn-primary submit_btn" > <i
+                                <button type="button" class="btn btn-primary submit_btn" onclick="saveCtgExpense()"> <i
                                         class="fa fa-address-book" aria-hidden="true"></i> <span id="submitBtnLabel"></span></button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa
                                 fa-times" aria-hidden="true"></i> Close</button>
@@ -178,16 +137,13 @@
                 },
                 serverSide: true,
                 ajax: {
-                    url: base_url + "/bankTransaction/index",
+                    url: base_url + "/expenseCtg",
                     method: "get",
                 },
                 columns: [
                     {data: 'sl', name: 'sl',class: 'text-left'},
-                    {data: 'transCode', name: 'transCode',class: 'text-left'},
-                    {data: 'trans_date', name: 'trans_date',class: 'text-left'},
-                    {data: 'remarks', name: 'remarks',class: 'text-left'},
-                    {data: 'receiptNo', name: 'receiptNo',class: 'text-left'},
-                    {data: 'debit_amount', name: 'debit_amount',class: 'text-left'},
+                    {data: 'title', name: 'title',class: 'text-left'},
+                    {data: 'is_active', name: 'is_active',class: 'text-left'},
                     {data: 'action', name: 'action', orderable: false, searchable: false,class: 'text-center'},
                 ],
                 "info": true,
@@ -201,7 +157,7 @@
             if (confirm("Are You sure want to delete !")){
                 $.ajax({
                     type: "DELETE",
-                    url: base_url + "/expenseDelete"+'/'+id,
+                    url: "{{ route('donation.donationRecord') }}"+'/'+id,
                     success: function (data) {
                         if(data.success){
                             toastr.success(data.success);
@@ -217,57 +173,49 @@
 
             }
         });
-        function updateInvInfo(id){
+        function updateExpenseCtg(id){
             $("#update_id").val('');
             $("#submitBtnLabel").html('Update');
-            $('#transactionForm')[0].reset();
+            $('#expenseCtgForm')[0].reset();
             $(".submit_btn").attr("disabled", true);
             $("#formOutput").html('');
             $.ajax({
                 type: "POST",
-                url: base_url + "/expenseShow",
+                url: base_url + "/expenseCtgShow",
                 data: {id:id},
                 'dataType': 'json',
                 success: function (response) {
                     if (response.status=='success') {
                         var data=response.data;
+
                         $(".submit_btn").attr("disabled", false);
                         $("#update_id").val(data.id);
-                        $("#bankID").val(data.bank_id);
-                        $("#transDate").val(data.transDataTitle);
-                        $("#ReceiptNo").val(data.receiptNo);
-                        $("#Remarks").val(data.remarks);
-                        $("#expenseBy").val(data.transBy);
-                        $("#invoiceOld").val(data.attachmentInfo);
-                        $("#Amount").val(data.debit_amount);
+                        $("#expenseCtgTtile").val(data.title);
+                        $("#isActive").val(data.is_active);
+
                     } else {
 
                     }
                 }
             });
         }
-        function addTransaction(){
-            $('#transactionForm')[0].reset();
+        function addExpenseCtg(){
+            $('#expenseCtgForm')[0].reset();
             $("#submitBtnLabel").html('Save');
             $("#formOutput").html('');
         }
-        $("#transactionForm").on('submit', (function (e) {
+        function saveCtgExpense(){
             $(".submit_btn").attr("disabled", true);
-            var formData = new FormData(this)
-
-            e.preventDefault();
+            $("#formOutput").html('');
             $.ajax({
-                url: base_url + "/bankTransaction/store",
                 type: "POST",
-                data: formData,
-                contentType: false,
-                cache: false,
-                processData: false,
+                url: base_url + "/expenseCtgStore",
+                data: $("#expenseCtgForm").serialize() ,
                 'dataType': 'json',
                 success: function (data) {
                     $(".submit_btn").attr("disabled", false);
                     if(data.success){
-                        $('#transactionModal').modal('toggle');
+                        $('#expenseCtgModal').modal('toggle');
                         toastr.success(data.success);
                         table.draw();
                     }
@@ -286,8 +234,7 @@
 
                 }
             });
-        }));
-
+        }
     </script>
 @endpush
 <style>
