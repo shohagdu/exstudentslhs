@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\DonarInfo;
+use App\Models\EventParticipantsModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,8 @@ class DashboardController extends Controller
     public function index()
     {
         $userType           = Auth::user()->user_type;
-        $restritedUserType  = array(2, 3, 4);
+        $userSscBatch=(!empty(Auth::user()->userSscBatch)?Auth::user()->userSscBatch:'');
+        $restritedUserType  = array(2, 3, 4,7);
 
         // Approved Amount
         $query    =   DonarInfo:: where(['isActive'=>1,'approvedStatus'=>2]);
@@ -80,7 +82,17 @@ class DashboardController extends Controller
                 ->groupBy(DB::raw('DATE(created_at)'))->orderBy('created_at','ASC')->having('ApprovedAmnt','>',0)
                 ->get();
         }
-        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType'));
+
+
+        $participant    =   EventParticipantsModel:: where(['is_active'=>1,'approved_status'=>2]);
+        $participant->when((isset($userType) && (in_array($userType,$restritedUserType))), function($query) use
+        ($userSscBatch)  {
+            $query->where('batch', $userSscBatch);
+        });
+        $totalParticpant=$participant->count('*');
+
+
+        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant'));
 
     }
 }

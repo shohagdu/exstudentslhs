@@ -24,10 +24,14 @@ class EventParticipantsController extends Controller
 
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
             $query = EventParticipantsModel::where(['event_participants_info.is_active'=>1])->
-            select('event_participants_info.*',"users.name as userName");
+            select('event_participants_info.*',"users.name as userName","professionInfo.title as professionTitle");
             $query->leftJoin('users', function($join) {
                 $join->on('users.id', '=', 'event_participants_info.addBy');
             });
+            $query->leftJoin('all_settings as professionInfo', function($join) {
+                $join->on('professionInfo.id', '=', 'event_participants_info.profession');
+            });
+
 
             if(isset(Auth::user()->user_type) && (Auth::user()->user_type==7 )){
                 $query->where('event_participants_info.batch', '=', $userSscBatch);
@@ -56,6 +60,7 @@ class EventParticipantsController extends Controller
                 ->get();
 
             $data = [];
+            //dd($result);
             if(count($result) > 0) {
                 $sl = $request->start + 1;
                 foreach ($result as $key => $row) {
@@ -75,7 +80,7 @@ class EventParticipantsController extends Controller
                         'batch'                     => $row->batch,
                         'genderTitle'               => (!empty($row->gender)?(($row->gender==1)?"Male":"Female"):''),
                         'mobile'                    =>  $row->mobile,
-                        'professionTitle'           =>  $row->profession,
+                        'professionTitle'           =>  $row->professionTitle,
                         'present_address'           =>  $row->present_address,
                         'profession_details'        =>  $row->profession_details,
                         'created_at'                =>  date('d M, Y h:i a',strtotime($row->created_at)),

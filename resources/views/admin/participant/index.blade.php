@@ -41,7 +41,7 @@
                                     <th>Gender</th>
                                     <th>Mobile  </th>
                                     <th>Profession</th>
-                                    <th>Present Address </th>
+{{--                                    <th>Present Address </th>--}}
                                     <th style="width: 20%">Action</th>
                                 </tr>
                                 </thead>
@@ -79,7 +79,6 @@
                             <div class="col-sm-8">
                                 <select name="sscBatch" id="sscBatch" class="form-control select2">
                                     <option value="">Select One</option>
-
                                         @if(!empty($userType) && $userType==7 )
                                             <option value="{{ $userSscBatch }}" >{{ $userSscBatch
                                             }}</option>
@@ -117,6 +116,7 @@
                                 </select>
                             </div>
                         </div>
+                        <!--
                         <div class="form-group row">
                             <label class="control-label col-sm-3 " for="Remarks">Present Address</label>
                             <div class="col-sm-8">
@@ -124,9 +124,10 @@
                                           class="form-control"></textarea>
                             </div>
                         </div>
+                        -->
 
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 " for="bankID">Current Profession</label>
+                            <label class="control-label col-sm-3 " for="bankID">Current Profession </label>
                             <div class="col-sm-8">
                                 <select name="currentProfession" id="currentProfession" class="form-control">
                                     <option value="">Select One</option>
@@ -135,13 +136,6 @@
                                             <option value="{{ $profesKey }}">{{ $profs  }}</option>
                                         @endforeach
                                     @endif
-{{--                                    <option value="1">Teacher/</option>--}}
-{{--                                    <option value="2">Govt. Job Holder</option>--}}
-{{--                                    <option value="3">Private Job Holder</option>--}}
-{{--                                    <option value="4">Businessman</option>--}}
-{{--                                    <option value="5">Foreigner</option>--}}
-{{--                                    <option value="6">Student</option>--}}
-{{--                                    <option value="7">Housewife</option>--}}
                                 </select>
                             </div>
                         </div>
@@ -153,12 +147,14 @@
                                           class="form-control"></textarea>
                             </div>
                         </div>
+                        <!--
                          <div class="form-group row">
                             <label class="control-label col-sm-3 " for="Remarks">Facebook Link</label>
                             <div class="col-sm-8">
                                 <input type="text" name="FacebookLink" placeholder="Enter Facebook Link" id="FacebookLink"  class="form-control">
                             </div>
                         </div>
+                        -->
 
 
 
@@ -226,7 +222,7 @@
                     {data: 'genderTitle', name: 'genderTitle',class: 'text-left'},
                     {data: 'mobile', name: 'mobile',class: 'text-left'},
                     {data: 'professionTitle', name: 'professionTitle',class: 'text-left'},
-                    {data: 'present_address', name: 'present_address',class: 'text-left'},
+                    // {data: 'present_address', name: 'present_address',class: 'text-left'},
                     {data: 'action', name: 'action', orderable: false, searchable: false,class: 'text-center'},
                 ],
                 "info": true,
@@ -275,10 +271,10 @@
                         $("#name").val(data.name);
                         $("#mobile").val(data.mobile);
                         $("#gender").val(data.gender);
-                        $("#present_address").val(data.present_address);
+                        // $("#present_address").val(data.present_address);
                         $("#currentProfession").val(data.profession);
                         $("#currentProfessionDetails").val(data.profession_details);
-                        $("#FacebookLink").val(data.facebookLink);
+                        // $("#FacebookLink").val(data.facebookLink);
                     } else {
 
                     }
@@ -292,7 +288,7 @@
         }
 
         $("#participantForm").on('submit', (function (e) {
-            //$(".submit_btn").attr("disabled", true);
+            $(".submit_btn").attr("disabled", true);
             var formData = new FormData(this)
 
             e.preventDefault();

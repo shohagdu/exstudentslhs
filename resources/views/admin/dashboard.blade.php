@@ -37,6 +37,26 @@
                     </div>
                 @endif
 
+                @if(!empty($userType) && ($userType==1 || $userType==7 ))
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>{{ (!empty($totalParticpant)?$totalParticpant:'0') }}</h3>
+
+                                    <p>Registered Participant</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+
+
                 @php
                     $i                              = 1;
                     $totalAmount                    = 0;
@@ -48,7 +68,6 @@
 
                     $iDate                  = 1;
                     $totalAmountDate        = 0;
-
                 @endphp
                 @if(!empty($userType) && ($userType==1 || $userType==2))
                     <div class="card">
