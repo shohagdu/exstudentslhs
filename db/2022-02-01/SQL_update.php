@@ -58,4 +58,5 @@ ALTER TABLE `event_participants_info` CHANGE `updated_time` `updated_at` DATETIM
 
 
 INSERT INTO `all_settings` (`id`, `title`, `type`, `is_active`, `created_by`, `created_at`, `created_ip`, `updated_by`, `updated_at`, `updated_ip`) VALUES (NULL, 'Student', '2', '1', NULL, '2022-03-12 11:01:16.000000', NULL, NULL, '2022-03-12 11:01:16.000000', NULL);
+
 ALTER TABLE `ex_students_lhs_db`.`event_participants_info` DROP INDEX `uniqueInfoCheque`, ADD UNIQUE `uniqueInfoCheque` (`name`, `batch`, `mobile`, `is_active`) USING BTREE;

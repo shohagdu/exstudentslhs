@@ -6,34 +6,37 @@
                 <h3 class="card-title">Dashboard</h3>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{ $approvedAmount }}</h3>
+                @if(!empty($userType) && ($userType==1 || $userType==2 || $userType==3 ))
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>{{ $approvedAmount }}</h3>
 
-                                <p>Total Approved Amount</p>
+                                    <p>Total Approved Amount</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
                             </div>
-                            <div class="icon">
-                                <i class="ion ion-bag"></i>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>{{ $pendingAmount }}</h3>
+                                    <p>Total Pending Amount</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3>{{ $pendingAmount }}</h3>
-                                <p>Total Pending Amount</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
+
                 @php
                     $i                              = 1;
                     $totalAmount                    = 0;
