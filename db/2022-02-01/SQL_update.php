@@ -45,3 +45,17 @@ ALTER TABLE `sms_history` CHANGE `member_id` `donar_id` INT(11) UNSIGNED NULL DE
 
 ALTER TABLE `sms_history` ADD `updated_at` DATETIME NULL DEFAULT NULL AFTER `ins_by`;
 ALTER TABLE `sms_history` CHANGE `ins_date` `created_at` DATETIME NOT NULL;
+
+//12-03-2022
+ALTER TABLE `event_participants_info` ADD `participantID` VARCHAR(30) NULL DEFAULT NULL AFTER `profession_details`, ADD `image` VARCHAR(150) NULL DEFAULT NULL AFTER `participantID`;
+
+ALTER TABLE `event_participants_info` CHANGE `name` `name` VARCHAR(300) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `mobile` `mobile` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `present_address` `present_address` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `profession_details` `profession_details` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `participantID` `participantID` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `image` `image` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `created_ip` `created_ip` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `updated_ip` `updated_ip` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `event_participants_info` ADD `facebookLink` VARCHAR(500) NULL DEFAULT NULL AFTER `image`;
+
+ALTER TABLE `ex_students_lhs_db`.`event_participants_info` ADD UNIQUE `uniqueInfoCheque` (`name`, `batch`, `mobile`);
+ALTER TABLE `event_participants_info` CHANGE `updated_time` `updated_at` DATETIME NULL DEFAULT NULL;
+
+
+INSERT INTO `all_settings` (`id`, `title`, `type`, `is_active`, `created_by`, `created_at`, `created_ip`, `updated_by`, `updated_at`, `updated_ip`) VALUES (NULL, 'Student', '2', '1', NULL, '2022-03-12 11:01:16.000000', NULL, NULL, '2022-03-12 11:01:16.000000', NULL);
+ALTER TABLE `ex_students_lhs_db`.`event_participants_info` DROP INDEX `uniqueInfoCheque`, ADD UNIQUE `uniqueInfoCheque` (`name`, `batch`, `mobile`, `is_active`) USING BTREE;

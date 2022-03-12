@@ -65,6 +65,7 @@ class UserController extends Controller
                         'user_type'         => (!empty($userRoleInfo[$row->user_type])
                             ?$userRoleInfo[$row->user_type]:''),
                         'mobileBankBkash'   => $row->mobileBankBkash,
+                        'userSscBatch'      => $row->userSscBatch,
                         'isActive'          => (!empty($row->status)?(($row->status==1)?"<span style='background-color: green !important;color: #fff;padding: 4px;border-radius: 5px'>Active</span>":"<span style='background-color: red !important;color: #fff;padding: 4px;border-radius: 5px'>Inactive</span>")
                             :''),
                     ];
@@ -155,7 +156,8 @@ class UserController extends Controller
 
             $validated_arr['mobile']            = $request->mobileNumber;
             $validated_arr['mobileBankBkash']   = $request->bkashNumber;
-            $validated_arr['user_type']         = $request->user_type;
+            $validated_arr['mobile']            = $request->mobileNumber;
+            $validated_arr['userSscBatch']      = $request->sscBatch;
 
             // code exist check
             $where = [
@@ -265,9 +267,9 @@ class UserController extends Controller
         $user->mobileBankBkash      = $request->bkashNumber;
         $user->user_type            = $request->user_type;
         $user->status               = $request->isActiveStatus;
+        $user->userSscBatch         = $request->sscBatch;
 
         $user->updated_ip           = $this->ipAddress;
-
         $user->updated_by           = $this->userID;
         $user->updated_at           = $this->createdAt;
 

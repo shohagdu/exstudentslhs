@@ -35,9 +35,10 @@
                     </div>
                 </div>
                 @php
-                    $i                = 1;
-                    $totalAmount      = 0;
-                    $pendingAmount    = 0;
+                    $i                              = 1;
+                    $totalAmount                    = 0;
+                    $pendingAmount                  = 0;
+                    $totalApprovedParticipatent     = 0;
 
                     $iBatch                = 1;
                     $totalAmountBatch      = 0;
@@ -133,6 +134,7 @@
                                     <tr>
                                         <th style="width: 10%">S/N</th>
                                         <th>Batch</th>
+                                        <th>Total Participator </th>
                                         <th class="text-right">Received</th>
                                     </tr>
                                     </thead>
@@ -141,10 +143,15 @@
                                     @if(!empty($batchWise))
                                         @foreach($batchWise as $batch)
                                             @php($totalAmountBatch += $batch->ApprovedAmnt)
+                                            @php($totalApprovedParticipatent += $batch->ApprovedParticipatent)
                                             <tr>
                                                 <td>{{ $iBatch++ }}</td>
                                                 <td>{{ (!empty($batch->sscBatch)?$batch->sscBatch:'')
                                                     }}</td>
+                                                <td class="text-center">{{ (!empty($batch->ApprovedParticipatent)
+                                                ?$batch->ApprovedParticipatent:'')
+                                                    }}</td>
+
                                                 <th  class="text-right">{{ (!empty($batch->ApprovedAmnt)
                                                     ?number_format($batch->ApprovedAmnt,2):'0.00')
                                                     }}</th>
@@ -156,8 +163,12 @@
                                     <tfoot>
                                     <tr>
                                         <th class="text-center" colspan="2">Total  Amount</th>
+                                        <th class="text-center" >{{ (!empty($totalApprovedParticipatent)
+                                        ?$totalApprovedParticipatent:'0
+                                            ') }}</th>
                                         <th class="text-right" >{{ (!empty($totalAmountBatch)?number_format($totalAmountBatch,2):'0
                                             .00') }}</th>
+
                                     </tr>
                                     </tfoot>
 

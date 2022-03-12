@@ -12,4 +12,8 @@ class EventParticipantsModel extends Model
 {
     use HasFactory;
     protected $table = "event_participants_info";
+
+    public static function countParticipate($batch) {
+        return $batch.rand(99999,10000);
+    }
 }

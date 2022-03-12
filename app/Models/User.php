@@ -24,6 +24,7 @@ class User extends Authenticatable
         'mobile',
         'mobileBankBkash',
         'isActiveStatus',
+        'userSscBatch',
         'user_type',
     ];
 
@@ -57,8 +58,9 @@ class User extends Authenticatable
           2=>'Admin',
           3=>'Fund Collection Coordinator',
           4=>'Operator',
-          5=>'Entertainment Committee Member',
-          6=>'Discipline Committee Member'
+          5=>'Entertainment Committee',
+          6=>'Discipline Committee',
+          7=>'Batch Coordinator'
         ];
     }
 

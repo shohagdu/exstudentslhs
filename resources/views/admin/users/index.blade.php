@@ -41,6 +41,7 @@
                                     <tr>
                                         <th class="text-left" style="width: 20px;">SL</th>
                                         <th class="text-left">Name</th>
+                                        <th class="text-left">Batch</th>
                                         <th class="text-left">Email</th>
                                         <th class="text-left">Mobile</th>
                                         <th class="text-left">bKash</th>
@@ -89,6 +90,7 @@
                 columns: [
                     {data: 'sl', name: 'sl',class: 'text-center'},
                     {data: 'name', name: 'name',class: 'text-left'},
+                    {data: 'userSscBatch', name: 'userSscBatch',class: 'text-left'},
                     {data: 'email', name: 'email',class: 'text-left'},
                     {data: 'mobile', name: 'mobile',class: 'text-left'},
                     {data: 'mobileBankBkash', name: 'mobileBankBkash',class: 'text-left'},

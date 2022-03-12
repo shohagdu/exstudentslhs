@@ -68,8 +68,9 @@ class DashboardController extends Controller
                 ->where('sendNumber', '!=', NULL)
                 ->select('donarinfos.sscBatch')
                 ->selectRaw("SUM(CASE WHEN donarinfos.approvedStatus = 1 THEN donarinfos.donationAmount ELSE 0 END) AS pendingAmnt, ".
-                   "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt")
+                   "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt," ."COUNT(CASE when donarinfos.approvedStatus = 2 THEN donarinfos.id ELSE NULL END) AS ApprovedParticipatent,COUNT(CASE when (donarinfos.approvedStatus = 1 || donarinfos.approvedStatus = 2)   THEN donarinfos.id ELSE NULL END) AS totalParticipatent")
                 ->groupBy("sscBatch")->orderBy('sscBatch','ASC')->having('ApprovedAmnt','>',0)->get();
+
 
             $dateWise = DonarInfo:: where(['donarinfos.isActive' => 1])
                 ->where('sendNumber', '!=', NULL)

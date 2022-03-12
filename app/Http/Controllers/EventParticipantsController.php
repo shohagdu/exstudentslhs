@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ExpenseCtgModel;
 use Illuminate\Http\Request;
 use App\Models\EventParticipantsModel;
 use Auth;
@@ -19,7 +20,8 @@ class EventParticipantsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
+            $userSscBatch=(!empty(Auth::user()->userSscBatch)?Auth::user()->userSscBatch:'');
+
             $searchText = !empty($request->search['value']) ? $request->search['value'] : false;
             $query = EventParticipantsModel::where(['event_participants_info.is_active'=>1])->
             select('event_participants_info.*',"users.name as userName");
@@ -27,10 +29,8 @@ class EventParticipantsController extends Controller
                 $join->on('users.id', '=', 'event_participants_info.addBy');
             });
 
-            if(isset(Auth::user()->user_type) && (Auth::user()->user_type==2 ||Auth::user()->user_type==3 ||
-                    Auth::user()->user_type==5 ||
-                    Auth::user()->user_type==6 )){
-                $query->where('event_participants_info.addBy', '=', Auth::id());
+            if(isset(Auth::user()->user_type) && (Auth::user()->user_type==7 )){
+                $query->where('event_participants_info.batch', '=', $userSscBatch);
             }
             $query->when(($request->status), function($query) use($request)  {
                 $query->where('approvedStatus', $request->status);
@@ -62,22 +62,24 @@ class EventParticipantsController extends Controller
                     $btn = '';
 
                     if($row->approved_status==2) {
-                        $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#expenseModal" data-toggle="tooltip" title="Edit Expense Info" onclick="updateParticipantInfo(' . $row->id . ')" id="editExpense_' . $row->id . '" ><i class="fa fa-edit"></i> Edit </button>';
+                        $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#participantModal" data-toggle="tooltip" title="Edit Expense Info" onclick="updateParticipantInfo(' . $row->id . ')" id="edit_' . $row->id . '" ><i class="fa fa-edit"></i> Edit </button>';
 
-                        if($userType==1 || $userType==2) {
-                            $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id
+
+                        $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id
                                 . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteData"><i class="fa fa-times"></i> Delete </a>';
-                        }
+
                     }
                     $data[] = [
                         'sl'                        => $sl++,
                         'name'                      => $row->name,
                         'batch'                     => $row->batch,
+                        'genderTitle'               => (!empty($row->gender)?(($row->gender==1)?"Male":"Female"):''),
                         'mobile'                    =>  $row->mobile,
+                        'professionTitle'           =>  $row->profession,
                         'present_address'           =>  $row->present_address,
-                        'profession_details'         =>  $row->profession_details,
-                        'created_at'        =>  date('d M, Y h:i a',strtotime($row->created_at)),
-                        'action'            => $btn,
+                        'profession_details'        =>  $row->profession_details,
+                        'created_at'                =>  date('d M, Y h:i a',strtotime($row->created_at)),
+                        'action'                    => $btn,
                     ];
                 }
             }
@@ -91,10 +93,15 @@ class EventParticipantsController extends Controller
             return  response()->json($json_data); // send data as json format
 
         }
+        $profession         = ExpenseCtgModel::where(['is_active'=>1,'type'=>2])->pluck('title','id');
+        $userSscBatch       = (!empty(Auth::user()->userSscBatch)?Auth::user()->userSscBatch:'');
+        $userType           = (!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
         $data = [
             'page_title'        => 'Participant Record',
+            'profession'        => $profession,
+            'userSscBatch'      => $userSscBatch,
+            'userType'          => $userType,
         ];
-
 
         return view('admin.participant.index',compact('data'));
     }
@@ -117,7 +124,142 @@ class EventParticipantsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'name'                  => ['required'],
+            'mobile'                => ['required', 'numeric'],
+            'gender'                => ['required', 'numeric'],
+            'currentProfession'     => ['required', 'numeric'],
+        ],[
+            'name.required'                     => 'The Name is required',
+            'mobile.required'                   => 'The Mobile is required',
+            'gender.required'                   => 'The Gender is required',
+            'currentProfession.required'        => 'The Current Profession is required',
+        ]);
+        $error_array=array();
+        if ($validator->fails()) {
+            foreach ($validator->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages;
+            }
+
+            $response = ['error'=> $error_array];
+            return response()->json($response);
+        }
+
+        $destinationImagePath = 'uploads/participant';
+        $extensionArray = ['jpg', 'jpeg', 'png', 'pdf', 'PNG', 'JPG', 'JPEG', 'PDF'];
+
+        if (!empty($request->file('invoice'))) {
+            $image = $request->file('invoice');
+            $extension = $image->getClientOriginalExtension();
+
+            $picture = $image->getSize();
+            $pictureMB = number_format($picture / 1048576, 2);
+            if ($pictureMB > 15) {
+                $error_array[] = 'File Attachment Maximum size 15 MB ';
+                $response = ['error'=> $error_array];
+                return response()->json($response);
+            }
+            if (!in_array($extension, $extensionArray)) {
+                $error_array[] = 'File Extension  should be jpg, jpeg, png or pdf ';
+                $response = ['error'=> $error_array];
+                return response()->json($response);
+            }
+            if ($pictureMB <= 5 && in_array($extension, $extensionArray)) {
+                $file_name = "profile_" .time() .'.' . $extension;
+                $image->getClientOriginalName();
+                $image->move($destinationImagePath, $file_name);
+                $picture = $destinationImagePath . '/' . $file_name;
+            } else {
+                $picture = '';
+            }
+        } elseif (!empty($request->imageOld)) {
+            $picture = $request->imageOld;
+        } else {
+            $picture = '';
+        }
+
+        if(empty($request->update_id)) {
+            DB::beginTransaction();
+            try {
+                $participantID = EventParticipantsModel::countParticipate($request->sscBatch);
+
+                $dataArray = [
+                    'participantID'     => $participantID,
+                    'batch'             => $request->sscBatch,
+                    'name'              => $request->name,
+                    'gender'            => $request->gender,
+                    'mobile'            => $request->mobile,
+                    'present_address'   => $request->present_address,
+                    'profession'        => $request->currentProfession,
+                    'profession_details' => $request->currentProfessionDetails,
+                    'facebookLink'      => $request->FacebookLink,
+                    'addBy'             => NULL,
+                    'image'             => $picture,
+                    'approved_status'   => 2,
+                    'is_active'         => 1,
+                    'created_time'      => date('Y-m-d H:i:s'),
+                    'created_by'        => Auth::id(),
+                    'created_ip'        => $request->ip(),
+                    'updated_at'      => date('Y-m-d H:i:s'),
+                    'updated_by'        => Auth::id(),
+                    'updated_ip'        => $request->ip()
+                ];
+                //dd($dataArray);
+
+                EventParticipantsModel::insert($dataArray);
+                DB::commit();
+                $redirectTo = route('participantsRecord');
+                $response = ['success' => "Your Information Successfully Saved", 'redirectTo' => $redirectTo];
+                \Toastr::success($response['success']);
+                return response()->json($response);
+            } catch (\Exception $e) {
+                DB::rollback();
+                $error_array[] =$e->getMessage();
+                $response = ['error' =>$error_array ];
+                return response()->json($response);
+            }
+
+        }else{
+
+            DB::beginTransaction();
+            try {
+
+                $dataArray = [
+                    'batch'             => $request->sscBatch,
+                    'name'              => $request->name,
+                    'gender'            => $request->gender,
+                    'mobile'            => $request->mobile,
+                    'present_address'   => $request->present_address,
+                    'profession'        => $request->currentProfession,
+                    'profession_details' => $request->currentProfessionDetails,
+                    'facebookLink'      => $request->FacebookLink,
+                    'addBy'             => NULL,
+                    'image'             => $picture,
+                    'approved_status'   => 2,
+                    'is_active'         => 1,
+                    'updated_at'      => date('Y-m-d H:i:s'),
+                    'updated_by'        => Auth::id(),
+                    'updated_ip'        => $request->ip()
+                ];
+                //dd($dataArray);
+
+                EventParticipantsModel::where('id',$request->update_id)->update($dataArray);
+
+                DB::commit();
+                $redirectTo = route('participantsRecord');
+                $response = ['success' => "Your Information Successfully Update", 'redirectTo' =>
+                    $redirectTo];
+                \Toastr::success($response['success']);
+                return response()->json($response);
+            } catch (\Exception $e) {
+                DB::rollback();
+                $error_array[] =$e->getMessage();
+                $response = ['error' =>$error_array ];
+                return response()->json($response);
+            }
+
+        }
     }
 
     /**
@@ -126,9 +268,18 @@ class EventParticipantsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $info   =   EventParticipantsModel::where(['id'=>$request->id])->first();
+            DB::commit();
+            $response = ['status'=>'success', 'message'=>"Data Found Successfully", 'data' => $info];
+        }catch (\Exception $e){
+            DB::rollback();
+            $response = ['status'=>'error','message'=>$e->getMessage(),'data'=>[]];
+        }
+        return response()->json($response);
     }
 
     /**
@@ -162,6 +313,29 @@ class EventParticipantsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $info   =   EventParticipantsModel::where(['id'=>$id])->first();
+            if(!empty($info)) {
+                $deleteDataInfo = [
+                    'is_active'     => 0,
+                    'updated_at'    => date('Y-m-d H:i:s'),
+                    'updated_by'    => Auth::id(),
+                    'updated_ip'    => ''
+                ];
+                EventParticipantsModel::where('id',$id)->update($deleteDataInfo);
+                DB::commit();
+                $redirectTo = route('participantsRecord');
+                $response = ['success' => "Request Delete Successfully", 'redirectTo' => $redirectTo];
+                \Toastr::success($response['success']);
+            }else{
+                DB::rollback();
+                $response = ['status'=>'error','message'=>'Failed to delete Request','data'=>[]];
+            }
+        }catch (\Exception $e){
+            DB::rollback();
+            $response = ['status'=>'error','message'=>$e->getMessage(),'data'=>[]];
+        }
+        return response()->json($response);
     }
 }

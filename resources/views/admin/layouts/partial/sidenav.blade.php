@@ -22,107 +22,16 @@
                     </p>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('donation.donationRecord') }}" class="nav-link">
-                    <i class="nav-icon fas fa-calculator"></i>
-                    <p>
-                        Donation Received
-                    </p>
-                </a>
-            </li>
-            <!--
-            <li class="nav-item {{ (Request::is('admin/accounting_transaction*')) ? 'menu-open': '' }}">
-                <a href="#" class="nav-link {{ (Request::is('admin/accounting_transaction*')) ? 'active': '' }}">
-                    <i class="nav-icon fas fa-calculator"></i>
-                    <p> Accounting Transaction <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview ">
-
-                    <li class="nav-item">
-                        <a href="{{ route('accounting_transaction.capital_investment') }}" class="nav-link {{ (\Request::route()->getName() == 'accounting_transaction.capital_investment') ? 'active' : '' }}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Capital Investment</p>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-exchange-alt"></i>
-                    <p> Expense Management <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Operating Expense Item</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Capital Expense Item</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Unexpected Expense Item</p>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-clipboard-list"></i>
-                    <p> Report Management <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Receipt</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Payment</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Transaction List</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Transaction Journal</p>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-cogs"></i>
-                    <p> Configuration <i class="right fas fa-angle-left"></i></p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Donation Category</p>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            -->
+            @if(!empty($userType) && ($userType==1 || $userType==2|| $userType==3))
+                <li class="nav-item">
+                    <a href="{{ route('donation.donationRecord') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>
+                            Donation Received
+                        </p>
+                    </a>
+                </li>
+            @endif
             @if(!empty($userType) && ($userType==1 || $userType==2))
                 <li class="nav-item">
                     <a href="#" class="nav-link">
@@ -192,6 +101,18 @@
                     </ul>
                 </li>
             @endif
+            @if(!empty($userType) && ($userType==5 || $userType==6 || $userType==7 ))
+                <li class="nav-item">
+                    <a href="{{ route('participantsRecord') }}" class="nav-link">
+                        <i class="nav-icon fas fa-calculator"></i>
+                        <p>
+                            Participants Record
+                        </p>
+                    </a>
+                </li>
+            @endif
+
+
             <li class="nav-item">
                 <a href="{{ route('userPass.index') }}" class="nav-link">
                     <i class="nav-icon fas fa-calculator"></i>

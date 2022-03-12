@@ -94,6 +94,18 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 text-center " for="sscBatch">Batch</label>
+                                        <div class="col-sm-8">
+                                            <select name="sscBatch" id="sscBatch" class="form-control select2">
+                                                <option value="">Select One</option>
+                                                @for($i=2022;$i>=1962;$i--)
+                                                    <option value="{{ $i }}" {{ ((!empty(old('sscBatch')) && (old('sscBatch')==$i))?"selected":'') }}>{{ $i
+                                        }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
 
 
 
