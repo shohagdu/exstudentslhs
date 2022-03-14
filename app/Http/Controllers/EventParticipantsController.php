@@ -42,8 +42,8 @@ class EventParticipantsController extends Controller
             $query->when(($request->gender), function($query) use($request)  {
                 $query->where('gender', $request->gender);
             });
-             $query->when(($request->batch), function($query) use($request)  {
-                $query->where('batch', $request->batch);
+             $query->when(($request->sscBatchSearch), function($query) use($request)  {
+                $query->where('batch', $request->sscBatchSearch);
             });
 
             $total = $query->count();
@@ -56,11 +56,11 @@ class EventParticipantsController extends Controller
                         $q->orWhere('event_participants_info.mobile', 'like', '%'.$searchText.'%');
                     });
                 })
-                ->orderBy('id', 'DESC')
+                ->orderBy('id', 'ASC')
                 ->get();
 
             $data = [];
-            //dd($result);
+
             if(count($result) > 0) {
                 $sl = $request->start + 1;
                 foreach ($result as $key => $row) {

@@ -32,6 +32,25 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <select name="sscBatchSearch" id="sscBatchSearch" class="form-control">
+                                            <option value="">Select One</option>
+                                            @if(!empty($userType) && $userType==7 )
+                                                <option value="{{ $userSscBatch }}" >{{ $userSscBatch
+                                                }}</option>
+                                            @else
+                                                @for($i=2022;$i>=1962;$i--)
+                                                    <option value="{{ $i }}" {{ ((!empty(old('sscBatch')) && (old('sscBatch')==$i))?"selected":'') }}>{{ $i
+                                                    }}</option>
+                                                @endfor
+                                            @endif
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <table  class="data-table table table-bordered table-hover">
                                 <thead>
                                 <tr>
@@ -214,6 +233,9 @@
                 ajax: {
                     url: base_url + "/participantsRecord",
                     method: "get",
+                    data: function (d) {
+                        (d.sscBatchSearch    = $("#sscBatchSearch").val())
+                    }
                 },
                 columns: [
                     {data: 'sl', name: 'sl',class: 'text-left'},
@@ -230,7 +252,9 @@
                 "responsive": true,
             });
         });
-
+        $("#sscBatchSearch").change(function () {
+            table.draw();
+        });
         $(document).on('click', '.deleteData', function () {
             var id = $(this).data("id");
             if (confirm("Are You sure want to delete !")){
