@@ -129,13 +129,15 @@ class EventParticipantsController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+
         $validator = Validator::make($request->all(), [
+            'sscBatch'              => ['required'],
             'name'                  => ['required'],
             'mobile'                => ['required', 'numeric'],
             'gender'                => ['required', 'numeric'],
             'currentProfession'     => ['required', 'numeric'],
         ],[
+            'sscBatch.required'                 => 'The SSC Batch is required',
             'name.required'                     => 'The Name is required',
             'mobile.required'                   => 'The Mobile is required',
             'gender.required'                   => 'The Gender is required',
@@ -150,6 +152,19 @@ class EventParticipantsController extends Controller
             $response = ['error'=> $error_array];
             return response()->json($response);
         }
+        $restrictedBatch = EventParticipantsModel::restrictedBatch();
+
+        if(!empty($request->sscBatch) && in_array($request->sscBatch,$restrictedBatch)){
+            $participant    =   EventParticipantsModel:: where(['is_active'=>1,'approved_status'=>2]);
+            $participant->where('batch', $request->sscBatch);
+            $countParticpant=$participant->count();
+            if(!empty($countParticpant) && $countParticpant>=25){
+                $error_array[] = 'Your Registration Limit is Over, Please remove some one who will not confirmed.';
+                $response = ['error'=> $error_array];
+                return response()->json($response);
+            }
+        }
+
 
         $destinationImagePath = 'uploads/participant';
         $extensionArray = ['jpg', 'jpeg', 'png', 'pdf', 'PNG', 'JPG', 'JPEG', 'PDF'];

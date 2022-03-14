@@ -6,54 +6,55 @@
                 <h3 class="card-title">Dashboard</h3>
             </div>
             <div class="card-body">
-                @if(!empty($userType) && ($userType==1 || $userType==2 || $userType==3 ))
+
                     <div class="row">
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3>{{ $approvedAmount }}</h3>
+                        @if(!empty($userType) && ($userType==1 || $userType==2 || $userType==3 ))
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h3>{{ $approvedAmount }}</h3>
 
-                                    <p>Total Approved Amount</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-bag"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-success">
-                                <div class="inner">
-                                    <h3>{{ $pendingAmount }}</h3>
-                                    <p>Total Pending Amount</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
+                                        <p>Total Approved Amount</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-bag"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box bg-success">
+                                    <div class="inner">
+                                        <h3>{{ $pendingAmount }}</h3>
+                                        <p>Total Pending Amount</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-stats-bars"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                            @if(!empty($userType) && ($userType==1 || $userType==7 ))
+                                <div class="col-lg-3 col-6">
+                                    <!-- small box -->
+                                    <div class="small-box bg-info">
+                                        <div class="inner">
+                                            <h3>{{ (!empty($totalParticpant)?$totalParticpant:'0') }}</h3>
+
+                                            <p>Registered Participant</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-bag"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                     </div>
-                @endif
 
-                @if(!empty($userType) && ($userType==1 || $userType==7 ))
-                    <div class="row">
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3>{{ (!empty($totalParticpant)?$totalParticpant:'0') }}</h3>
 
-                                    <p>Registered Participant</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-bag"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+
 
 
 
@@ -65,6 +66,7 @@
 
                     $iBatch                = 1;
                     $totalAmountBatch      = 0;
+                    $totalparticipate      = 0;
 
                     $iDate                  = 1;
                     $totalAmountDate        = 0;
@@ -252,7 +254,60 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="card pull-right">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    Date Wise Collection Overview
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%">S/N</th>
+                                        <th>Year</th>
+                                        <th class="text-right">Registered</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php($ij=1)
+                                    @php($totalparticipate=0)
+                                    @if(!empty($participantYear))
+                                        @foreach($participantYear as $participate)
+                                            @php($totalparticipate += $participate->total)
+                                            <tr>
+                                                <td>{{ $ij++ }}</td>
+                                                <td>{{ (!empty($participate->batch)?$participate->batch:'')
+                                                    }}</td>
+                                                <th  class="text-right">{{ (!empty($participate->total)
+                                                    ?$participate->total:'')
+                                                    }}</th>
 
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th class="text-center" colspan="2">Total  Registered Students</th>
+                                        <th class="text-right" >{{ (!empty($totalparticipate)?$totalparticipate:'0.00') }}</th>
+                                    </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 @endif
 
 

@@ -49,8 +49,9 @@ class DashboardController extends Controller
         $pendingAmount=$pendingQuery->sum('donationAmount');
 
         $coOrdinatorWiseCurrentApprovdAmnt  =   '';
-        $batchWise  =   '';
-        $dateWise   =   '';
+        $batchWise          =   '';
+        $dateWise           =   '';
+        $participantYear    =   '';
 
 
         if($userType==1 || $userType==2 ) {
@@ -81,6 +82,13 @@ class DashboardController extends Controller
                    "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt")
                 ->groupBy(DB::raw('DATE(created_at)'))->orderBy('created_at','ASC')->having('ApprovedAmnt','>',0)
                 ->get();
+
+
+            $participantYear=EventParticipantsModel:: where(['event_participants_info.is_active' => 1])
+                ->selectRaw("batch, ".
+                    "COUNT(*) AS total")
+                ->groupBy(DB::raw('batch'))->orderBy('batch','ASC')
+                ->get();
         }
 
 
@@ -92,7 +100,7 @@ class DashboardController extends Controller
         $totalParticpant=$participant->count('*');
 
 
-        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant'));
+        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear'));
 
     }
 }
