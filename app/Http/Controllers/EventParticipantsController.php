@@ -166,7 +166,7 @@ class EventParticipantsController extends Controller
                 $participant = EventParticipantsModel:: where(['is_active' => 1, 'approved_status' => 2]);
                 $participant->where('batch', $request->sscBatch);
                 $countParticpant = $participant->count();
-                if (!empty($countParticpant) && $countParticpant >= 40) {
+                if (!empty($countParticpant) && $countParticpant >= 50) {
                     $error_array[] = 'Your Registration Limit is Over, Please remove some one who will not confirmed.';
                     $response = ['error' => $error_array];
                     return response()->json($response);
