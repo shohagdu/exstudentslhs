@@ -30,7 +30,7 @@
                                                           style="height: 110px"></td>
             <td style="width: 60%;text-align: center">
                 <h2>Ex. Students Forum, Lemua High School</h2>
-                <div style="font-size: 19px">Feni Sadar, Feni</div>
+                <div style="font-size: 22px">Feni Sadar, Feni</div>
                 <h5 style="padding-top:30px;font-weight: bold;">শিক্ষক মহোদয়দের বিদায় সংবর্ধনা অনুষ্ঠান-২০২২</h5>
                 <h4 style="font-weight: bold;padding-top:10px;text-decoration: underline;">অংশগ্রহণকারীদের তথ্য </h4>
             </td>
@@ -69,10 +69,10 @@
 </div>
 <style>
     #table-style td{
-        padding:5px;
-        margin: 2px;
+        /*padding:5px;*/
+        /*margin: 2px;*/
     } #table-style th{
-        padding:5px;
+        /*padding:5px;*/
     }
     @media print
     {
@@ -82,20 +82,11 @@
         }
     }
 
-    #image {
-        background-image: url('backend/images/logo/esfLogo.png');
-        background-position: 0 0;
-        background-repeat: no-repeat;
-        position: relative;
-        left: 30%;
-        top: 50%;
-    }
-
     #image img {
         /* the actual 'watermark' */
         position: absolute;
-        top: 700px; /* or whatever */
-        left: 0; /* or whatever, position according to taste */
+        top: 30%; /* or whatever */
+        left: 25%; /* or whatever, position according to taste */
         opacity: 0.1; /* Firefox, Chrome, Safari, Opera, IE >= 9 (preview) */
     }
 
