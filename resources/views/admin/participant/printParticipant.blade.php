@@ -84,9 +84,10 @@
 
     #image img {
         /* the actual 'watermark' */
+        height: 700px;
         position: absolute;
-        top: 30%; /* or whatever */
-        left: 25%; /* or whatever, position according to taste */
+        top: 20%; /* or whatever */
+        left: 15%; /* or whatever, position according to taste */
         opacity: 0.1; /* Firefox, Chrome, Safari, Opera, IE >= 9 (preview) */
     }
 
