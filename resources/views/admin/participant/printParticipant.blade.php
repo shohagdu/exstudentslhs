@@ -56,7 +56,7 @@
                     <tr>
                         <td style="text-align: center">{{ $i++ }}</td>
                         <td>{{ !empty($row->participantID)?$row->participantID:'' }}</td>
-                        <td>{{ !empty($row->name)?$row->name:'' }}</td>
+                        <td>{{ !empty($row->name)?ucwords($row->name):'' }}</td>
                         <td style="text-align: center">{{ !empty($row->batch)?$row->batch:'' }}</td>
                         <td style="text-align: center">{{ !empty($row->mobile)?str_pad(substr($row->mobile, -4), strlen($row->mobile), '*',
                         STR_PAD_LEFT):'' }}</td>
