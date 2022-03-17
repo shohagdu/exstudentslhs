@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExpenseCtgModel;
+use App\Models\SmsHistory;
 use Illuminate\Http\Request;
 use App\Models\EventParticipantsModel;
 use Auth;
@@ -45,6 +46,10 @@ class EventParticipantsController extends Controller
              $query->when(($request->sscBatchSearch), function($query) use($request)  {
                 $query->where('batch', $request->sscBatchSearch);
             });
+            $query->when(($request->currentProfessionSearch), function($query) use($request)  {
+                $query->where('profession', $request->currentProfessionSearch);
+            });
+
 
             $total = $query->count();
             $totalFiltered = $total;
@@ -67,13 +72,16 @@ class EventParticipantsController extends Controller
                     $btn = '';
 
                     if($row->approved_status==2) {
-                        $btn .= ' <button type="button" class="btn btn-info btn-sm " data-toggle="modal" data-target="#participantModal" data-toggle="tooltip" title="Edit Expense Info" onclick="updateParticipantInfo(' . $row->id . ')" id="edit_' . $row->id . '" ><i class="fa fa-edit"></i> Edit </button>';
-
-
-                        $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id
-                                . '" data-original-title="Delete" class="btn btn-danger btn-sm deleteData"><i class="fa fa-times"></i> Delete </a>';
-
+                        $btn .= ' <button onclick="confirmJoinUs(' . $row->id . ')"   data-id="' . $row->id
+                            . '" data-original-title="Confirm to Join Us" class="btn btn-success btn-xs confirmedJoinUs "><i class="fa fa-envelope-open"></i> Waiting </button>';
+                        $btn .= ' <button type="button" class="btn btn-info btn-xs " data-toggle="modal" data-target="#participantModal" data-toggle="tooltip" title="Edit Expense Info" onclick="updateParticipantInfo(' . $row->id . ')" id="edit_' . $row->id . '" ><i class="fa fa-edit"></i> Edit </button>';
                     }
+
+                    if($row->approved_status==4) {
+                        $btn .= ' <button type="button" class="btn btn-info btn-xs " ><i class="fa fa-check"></i> Confirmed </button>';
+                    }
+                    $btn .= ' <a href="javascript:void(0)" data-toggle="tooltip" title="Delete"  data-id="' . $row->id
+                        . '" data-original-title="Delete" class="btn btn-danger btn-xs deleteData"><i class="fa fa-times"></i> Delete </a>';
                     $data[] = [
                         'sl'                        => $sl++,
                         'name'                      => $row->name,
@@ -129,7 +137,7 @@ class EventParticipantsController extends Controller
      */
     public function store(Request $request)
     {
-
+        $userType=(!empty(Auth::user()->user_type)?Auth::user()->user_type:'');
         $validator = Validator::make($request->all(), [
             'sscBatch'              => ['required'],
             'name'                  => ['required'],
@@ -153,15 +161,16 @@ class EventParticipantsController extends Controller
             return response()->json($response);
         }
         $restrictedBatch = EventParticipantsModel::restrictedBatch();
-
-        if(!empty($request->sscBatch) && in_array($request->sscBatch,$restrictedBatch)){
-            $participant    =   EventParticipantsModel:: where(['is_active'=>1,'approved_status'=>2]);
-            $participant->where('batch', $request->sscBatch);
-            $countParticpant=$participant->count();
-            if(!empty($countParticpant) && $countParticpant>=25){
-                $error_array[] = 'Your Registration Limit is Over, Please remove some one who will not confirmed.';
-                $response = ['error'=> $error_array];
-                return response()->json($response);
+        if($userType!=1) {
+            if (!empty($request->sscBatch) && in_array($request->sscBatch, $restrictedBatch)) {
+                $participant = EventParticipantsModel:: where(['is_active' => 1, 'approved_status' => 2]);
+                $participant->where('batch', $request->sscBatch);
+                $countParticpant = $participant->count();
+                if (!empty($countParticpant) && $countParticpant >= 40) {
+                    $error_array[] = 'Your Registration Limit is Over, Please remove some one who will not confirmed.';
+                    $response = ['error' => $error_array];
+                    return response()->json($response);
+                }
             }
         }
 
@@ -343,6 +352,7 @@ class EventParticipantsController extends Controller
                     'updated_by'    => Auth::id(),
                     'updated_ip'    => ''
                 ];
+
                 EventParticipantsModel::where('id',$id)->update($deleteDataInfo);
                 DB::commit();
                 $redirectTo = route('participantsRecord');
@@ -376,5 +386,45 @@ class EventParticipantsController extends Controller
             return 'No Record Exist';
         }
 
+    }
+
+    public function confirmToJoinUs(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $info   =   EventParticipantsModel::where(['id'=>$request->id])->first();
+
+            if(!empty($info) && $info->approved_status==2) {
+                $deleteDataInfo = [
+                    'approved_status'       => 4,
+                    'updated_at'            => date('Y-m-d H:i:s'),
+                    'updated_by'            => Auth::id(),
+                    'updated_ip'            => ''
+                ];
+                $sms ="congratulation {$info->name}, Your are confirmed to join Teachers Farewell-2022  ,Lemua High School. Ex. Students Forum.  ";
+                $smsHistory=[
+                    'donar_id'         => $info->id,
+                    'mobile_number'    => (!empty($info->mobile)? substr($info->mobile, -11):''),
+                    'msg'              => $sms,
+                    'send_status'      => 1,
+                    'ins_date'         => date('Y-m-d H:i:s'),
+                    'ins_by'           => Auth::id()
+                ];
+
+                EventParticipantsModel::where('id',$request->id)->update($deleteDataInfo);
+                SmsHistory::create($smsHistory);
+                DB::commit();
+                $redirectTo = route('participantsRecord');
+                $response = ['success' => "This Applicant Confirmed to Join with Us", 'redirectTo' => $redirectTo];
+                \Toastr::success($response['success']);
+            }else{
+                DB::rollback();
+                $response = ['status'=>'error','message'=>'Failed to Confirmed Request','data'=>[]];
+            }
+        }catch (\Exception $e){
+            DB::rollback();
+            $response = ['status'=>'error','message'=>$e->getMessage(),'data'=>[]];
+        }
+        return response()->json($response);
     }
 }

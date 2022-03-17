@@ -1,5 +1,5 @@
 @php
-    $userType           = Auth::user()->user_type;
+     $userType           = Auth::user()->user_type;
 @endphp
 <!-- Brand Logo -->
 <a href="{{ URL('/admin')}}" class="brand-link">
@@ -101,7 +101,7 @@
                     </ul>
                 </li>
             @endif
-            @if(!empty($userType) && ($userType==5 || $userType==6 || $userType==7 ))
+            @if(!empty($userType) && ($userType==4  ||$userType==5 || $userType==6 || $userType==7 ))
                 <li class="nav-item">
                     <a href="{{ route('participantsRecord') }}" class="nav-link">
                         <i class="nav-icon fas fa-calculator"></i>

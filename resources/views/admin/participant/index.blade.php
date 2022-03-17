@@ -59,6 +59,24 @@
 
                                         </select>
                                     </div>
+                                    <div class="col-sm-3">
+                                        <select  id="genderSearch" class="form-control">
+                                            <option value="">Select One</option>
+                                            <option value="1">Male</option>
+                                            <option value="2">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <select  id="currentProfessionSearch" class="form-control">
+                                            <option value="">Select One</option>
+                                            @if(!empty($profession))
+                                                @foreach($profession as $profesKey=> $profs)
+                                                    <option value="{{ $profesKey }}">{{ $profs  }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+
                                 </div>
                             </div>
                             <table  class="data-table table table-bordered table-hover">
@@ -244,7 +262,11 @@
                     url: base_url + "/participantsRecord",
                     method: "get",
                     data: function (d) {
-                        (d.sscBatchSearch    = $("#sscBatchSearch").val())
+                        (
+                            d.sscBatchSearch    = $("#sscBatchSearch").val(),
+                            d.gender    = $("#genderSearch").val(),
+                            d.currentProfessionSearch    = $("#currentProfessionSearch").val()
+                        )
                     }
                 },
                 columns: [
@@ -262,7 +284,7 @@
                 "responsive": true,
             });
         });
-        $("#sscBatchSearch").change(function () {
+        $("#sscBatchSearch,#genderSearch,#currentProfessionSearch").change(function () {
             table.draw();
         });
         $(document).on('click', '.deleteData', function () {
@@ -356,6 +378,29 @@
                 }
             });
         }));
+
+        $(document).on('click', '.confirmedJoinUs', function () {
+            var id = $(this).data("id");
+            if (confirm("Are You sure want to delete !")){
+                $.ajax({
+                    type: "POST",
+                    url: base_url + "/confirmToJoinUs",
+                    data: {id:id},
+                    success: function (data) {
+                        if(data.success){
+                            toastr.success(data.success);
+                            table.draw();
+                        } else{
+                            toastr.error(data.error);
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                });
+
+            }
+        });
 
     </script>
 @endpush

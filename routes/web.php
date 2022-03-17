@@ -116,9 +116,11 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
     Route::get('participantsRecord', [EventParticipantsController::class,'index'])->name('participantsRecord');
     Route::post('participantsStore', [EventParticipantsController::class,'store'])->name('participantsStore');
     Route::post('singleParticipantsStore', [EventParticipantsController::class,'show'])->name('singleParticipantsStore');
+
     Route::delete('participantsDelete/{id}', [EventParticipantsController::class, 'destroy'])->name('participantsDelete');
 
     Route::get('printParticipant/{sscBatch}', [EventParticipantsController::class,'printParticipant'])->name('printParticipant');
+    Route::post('confirmToJoinUs', [EventParticipantsController::class,'confirmToJoinUs'])->name('confirmToJoinUs');
 
 
 
