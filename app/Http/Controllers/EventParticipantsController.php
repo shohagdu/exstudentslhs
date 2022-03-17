@@ -372,7 +372,9 @@ class EventParticipantsController extends Controller
     {
         DB::beginTransaction();
         try {
-            $info   =   EventParticipantsModel::where(['is_active'=>1])->when(($sscBatch), function($query) use($sscBatch)  {
+            $info   =   EventParticipantsModel::where(['is_active'=>1,'approved_status'=>4])->when(($sscBatch),
+                function($query) use
+            ($sscBatch)  {
                 if($sscBatch!='-') {
                     $query->where('batch', $sscBatch);
                 }
