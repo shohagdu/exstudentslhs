@@ -358,4 +358,23 @@ class EventParticipantsController extends Controller
         }
         return response()->json($response);
     }
+    public function printParticipant($sscBatch=NULL)
+    {
+        DB::beginTransaction();
+        try {
+            $info   =   EventParticipantsModel::where(['is_active'=>1])->when(($sscBatch), function($query) use($sscBatch)  {
+                if($sscBatch!='-') {
+                    $query->where('batch', $sscBatch);
+                }
+            })->orderBy('batch')->orderBy('id')->get();
+            $data=[
+                'record'=>$info
+            ];
+            return view('admin.participant.printParticipant',compact('data'));
+        }catch (\Exception $e){
+            DB::rollback();
+            return 'No Record Exist';
+        }
+
+    }
 }

@@ -118,6 +118,8 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'Admin'], fu
     Route::post('singleParticipantsStore', [EventParticipantsController::class,'show'])->name('singleParticipantsStore');
     Route::delete('participantsDelete/{id}', [EventParticipantsController::class, 'destroy'])->name('participantsDelete');
 
+    Route::get('printParticipant/{sscBatch}', [EventParticipantsController::class,'printParticipant'])->name('printParticipant');
+
 
 
 

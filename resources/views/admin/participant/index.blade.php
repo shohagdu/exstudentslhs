@@ -10,6 +10,11 @@
     $profession       = (!empty($data['profession'])?$data['profession']:'');
     $userType         = (!empty($data['userType'])?$data['userType']:'');
     $userSscBatch     = (!empty($data['userSscBatch'])?$data['userSscBatch']:'');
+    if(!empty($userType) && $userType==7 ){
+        $sscBatch=$userSscBatch;
+    }else{
+        $sscBatch='-';
+    }
 
 @endphp
 @section('content')
@@ -28,6 +33,11 @@
                                         data-target="#participantModal">
                                     <i class="fa fa-plus-circle"></i> Add
                                     New</button>
+                                <a href="{{ url('admin/printParticipant/'.$sscBatch) }}" target="_blank" class="btn
+                                btn-info btn-sm" >
+                                    <i class="fa fa-print"></i> Print</a>
+
+
                             </div>
                         </div>
                         <!-- /.card-header -->

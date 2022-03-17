@@ -259,7 +259,7 @@
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <i class="fas fa-chart-pie mr-1"></i>
-                                    Date Wise Collection Overview
+                                    Batch Overview Participants Overview
                                 </h3>
                                 <div class="card-tools">
                                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -277,6 +277,7 @@
                                         <th style="width: 10%">S/N</th>
                                         <th>Year</th>
                                         <th class="text-right">Registered</th>
+                                        <th class="text-right"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -292,6 +293,11 @@
                                                 <th  class="text-right">{{ (!empty($participate->total)
                                                     ?$participate->total:'')
                                                     }}</th>
+                                                <th>
+                                                    <a href="{{ url('admin/printParticipant/'.$participate->batch) }}" target="_blank" class="btn
+                                btn-info btn-xs" >
+                                                        <i class="fa fa-print"></i> Print</a>
+                                                </th>
 
                                             </tr>
                                         @endforeach
@@ -301,6 +307,11 @@
                                     <tr>
                                         <th class="text-center" colspan="2">Total  Registered Students</th>
                                         <th class="text-right" >{{ (!empty($totalparticipate)?$totalparticipate:'0.00') }}</th>
+                                        <th>
+                                            <a href="{{ url('admin/printParticipant/-') }}" target="_blank" class="btn
+                                btn-info btn-xs" >
+                                                <i class="fa fa-print"></i> Print</a>
+                                        </th>
                                     </tr>
                                     </tfoot>
 
