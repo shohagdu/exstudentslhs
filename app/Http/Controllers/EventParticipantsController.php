@@ -403,7 +403,7 @@ class EventParticipantsController extends Controller
                     'updated_by'            => Auth::id(),
                     'updated_ip'            => ''
                 ];
-                $sms ="Congratulation! \r\nDear {$info->name}, You are confirmed to join Teachers Farewell-2022, Lemua High School. \r\n \r\nRegards\r\n Ex. Students Forum of LHS  ";
+                $sms ="Congratulation! \r\nDear {$info->name}, Your participation has been confirmed in the teachers farewell ceremony-2022 of Lemua High School . \r\n \r\nRegards\r\n Ex. Students Forum of LHS";
                 $smsHistory=[
                     'donar_id'         => $info->id,
                     'mobile_number'    => (!empty($info->mobile)? substr($info->mobile, -11):''),
