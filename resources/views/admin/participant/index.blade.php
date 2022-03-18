@@ -391,7 +391,7 @@
 
         $(document).on('click', '.confirmedJoinUs', function () {
             var id = $(this).data("id");
-            if (confirm("Are You sure want to delete !")){
+            if (confirm("Are You sure want to Confirm to Join us !")){
                 $.ajax({
                     type: "POST",
                     url: base_url + "/confirmToJoinUs",
