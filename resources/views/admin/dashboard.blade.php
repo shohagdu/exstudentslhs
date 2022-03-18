@@ -85,6 +85,7 @@
 
                     $iDate                  = 1;
                     $totalAmountDate        = 0;
+                    $iBestBatch             = 1;
                 @endphp
                 @if(!empty($userType) && ($userType==1 || $userType==2))
                     <div class="card">
@@ -215,6 +216,74 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    Best Batch Collection Overview
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%">S/N</th>
+                                        <th>Batch</th>
+                                        <th>Total Participator </th>
+                                        <th class="text-right">Received</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    @if(!empty($batchWiseBestAmount))
+                                        @foreach($batchWiseBestAmount as $batch)
+                                            @php($totalAmountBatch += $batch->ApprovedAmnt)
+                                            @php($totalApprovedParticipatent += $batch->ApprovedParticipatent)
+                                            <tr>
+                                                <td>{{ $iBestBatch++ }}</td>
+                                                <td>{{ (!empty($batch->sscBatch)?$batch->sscBatch:'')
+                                                    }}</td>
+                                                <td class="text-center">{{ (!empty($batch->ApprovedParticipatent)
+                                                ?$batch->ApprovedParticipatent:'')
+                                                    }}</td>
+
+                                                <th  class="text-right">{{ (!empty($batch->ApprovedAmnt)
+                                                    ?number_format($batch->ApprovedAmnt,2):'0.00')
+                                                    }}</th>
+
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th class="text-center" colspan="2">Total  Amount</th>
+                                        <th class="text-center" >{{ (!empty($totalApprovedParticipatent)
+                                        ?$totalApprovedParticipatent:'0
+                                            ') }}</th>
+                                        <th class="text-right" >{{ (!empty($totalAmountBatch)?number_format($totalAmountBatch,2):'0
+                                            .00') }}</th>
+
+                                    </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                     <div class="col-lg-6 col-12">
                         <div class="card pull-right">
                             <div class="card-header">

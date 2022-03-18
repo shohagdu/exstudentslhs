@@ -52,6 +52,7 @@ class DashboardController extends Controller
         $batchWise          =   '';
         $dateWise           =   '';
         $participantYear    =   '';
+        $batchWiseBestAmount=   '';
 
 
         if($userType==1 || $userType==2 ) {
@@ -83,6 +84,12 @@ class DashboardController extends Controller
                 ->groupBy(DB::raw('DATE(created_at)'))->orderBy('created_at','ASC')->having('ApprovedAmnt','>',0)
                 ->get();
 
+            $batchWiseBestAmount = DonarInfo:: where(['donarinfos.isActive' => 1])
+                ->where('sendNumber', '!=', NULL)
+                ->select('donarinfos.sscBatch')
+                ->selectRaw("SUM(CASE WHEN donarinfos.approvedStatus = 1 THEN donarinfos.donationAmount ELSE 0 END) AS pendingAmnt, ".
+                    "SUM(CASE WHEN donarinfos.approvedStatus = 2 THEN donarinfos.donationAmount ELSE 0 END) AS ApprovedAmnt," ."COUNT(CASE when donarinfos.approvedStatus = 2 THEN donarinfos.id ELSE NULL END) AS ApprovedParticipatent,COUNT(CASE when (donarinfos.approvedStatus = 1 || donarinfos.approvedStatus = 2)   THEN donarinfos.id ELSE NULL END) AS totalParticipatent")
+                ->groupBy("sscBatch")->orderBy('ApprovedAmnt','DESC')->having('ApprovedAmnt','>',0)->get();
 
             $participantYear=EventParticipantsModel:: where(['event_participants_info.is_active' => 1])
                 ->selectRaw("batch, ".
@@ -109,12 +116,7 @@ class DashboardController extends Controller
         $totalParticpantApproved=$participantApproved->count('*');
 
 
-
-
-
-
-
-        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear','totalParticpantApproved'));
+        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear','totalParticpantApproved','batchWiseBestAmount'));
 
     }
 }
