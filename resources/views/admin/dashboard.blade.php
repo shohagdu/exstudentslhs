@@ -43,13 +43,28 @@
                                         <div class="inner">
                                             <h3>{{ (!empty($totalParticpant)?$totalParticpant:'0') }}</h3>
 
-                                            <p>Registered Participant</p>
+                                            <p>Waiting for Approved Participant</p>
                                         </div>
                                         <div class="icon">
                                             <i class="ion ion-bag"></i>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-lg-3 col-6">
+                                    <!-- small box -->
+                                    <div class="small-box bg-info">
+                                        <div class="inner">
+                                            <h3>{{ (!empty($totalParticpantApproved)?$totalParticpantApproved:'0') }}</h3>
+                                            <p>Approved Participant</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-bag"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                             @endif
                     </div>
 
@@ -254,7 +269,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-12">
+                    <div class="col-lg-8 col-12">
                         <div class="card pull-right">
                             <div class="card-header">
                                 <h3 class="card-title">
@@ -276,23 +291,41 @@
                                     <tr>
                                         <th style="width: 10%">S/N</th>
                                         <th>Year</th>
-                                        <th class="text-right">Registered</th>
-                                        <th class="text-right"></th>
+                                        <th class="text-center">Total Registered</th>
+                                        <th class="text-center">Approved</th>
+                                        <th class="text-center">Waiting for SMS</th>
+                                        <th class="text-center"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @php($ij=1)
                                     @php($totalparticipate=0)
+                                    @php($totalparticipateApproved=0)
+                                    @php($totalparticipatePending=0)
                                     @if(!empty($participantYear))
                                         @foreach($participantYear as $participate)
                                             @php($totalparticipate += $participate->total)
+                                            @php($totalparticipateApproved += $participate->ApprovedParticipant)
+                                            @php($totalparticipatePending += $participate->pendingParticipant)
+
                                             <tr>
                                                 <td>{{ $ij++ }}</td>
                                                 <td>{{ (!empty($participate->batch)?$participate->batch:'')
                                                     }}</td>
-                                                <th  class="text-right">{{ (!empty($participate->total)
-                                                    ?$participate->total:'')
+                                                <th  class="text-center">{{ (!empty($participate->total)
+                                                    ?$participate->total:'0')
                                                     }}</th>
+                                                <th  class="text-center" style="color:green;font-weight: bold">{{
+                                                (!empty($participate->ApprovedParticipant)
+                                                    ?$participate->ApprovedParticipant:'0')
+                                                    }}</th>
+                                                 <th  class="text-center" style="color:red;font-weight: bold">
+                                                     {{ (!empty
+                                                 ($participate->pendingParticipant)
+                                                    ?$participate->pendingParticipant:'0')
+                                                    }}</th>
+
+
                                                 <th>
                                                     <a href="{{ url('admin/printParticipant/'.$participate->batch) }}" target="_blank" class="btn
                                 btn-info btn-xs" >
@@ -306,7 +339,14 @@
                                     <tfoot>
                                     <tr>
                                         <th class="text-center" colspan="2">Total  Registered Students</th>
-                                        <th class="text-right" >{{ (!empty($totalparticipate)?$totalparticipate:'0.00') }}</th>
+                                        <th class="text-center" >{{ (!empty($totalparticipate)?$totalparticipate:'0') }}</th>
+                                        <th class="text-center" style="color:green;font-weight: bold" >{{ (!empty($totalparticipateApproved)
+                                        ?$totalparticipateApproved:'0') }}</th>
+                                        <th class="text-center" style="color:red;font-weight: bold" >{{ (!empty
+                                        ($totalparticipatePending)
+                                        ?$totalparticipatePending:'0') }}</th>
+
+
                                         <th>
                                             <a href="{{ url('admin/printParticipant/-') }}" target="_blank" class="btn
                                 btn-info btn-xs" >

@@ -86,9 +86,10 @@ class DashboardController extends Controller
 
             $participantYear=EventParticipantsModel:: where(['event_participants_info.is_active' => 1])
                 ->selectRaw("batch, ".
-                    "COUNT(*) AS total")
+                    "COUNT(*) AS total,"."COUNT(CASE WHEN event_participants_info.approved_status = 4 THEN event_participants_info.id ELSE NULL END) AS ApprovedParticipant,"."COUNT(CASE WHEN event_participants_info.approved_status = 2 THEN event_participants_info.id ELSE NULL END) AS pendingParticipant")
                 ->groupBy(DB::raw('batch'))->orderBy('batch','ASC')
                 ->get();
+
         }
 
 
@@ -100,7 +101,20 @@ class DashboardController extends Controller
         $totalParticpant=$participant->count('*');
 
 
-        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear'));
+        $participantApproved    =   EventParticipantsModel:: where(['is_active'=>1,'approved_status'=>4]);
+        $participantApproved->when((isset($userType) && (in_array($userType,$restritedUserType))), function($query) use
+        ($userSscBatch)  {
+            $query->where('batch', $userSscBatch);
+        });
+        $totalParticpantApproved=$participantApproved->count('*');
+
+
+
+
+
+
+
+        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear','totalParticpantApproved'));
 
     }
 }
