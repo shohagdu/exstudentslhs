@@ -38,7 +38,7 @@ class EventParticipantsController extends Controller
                 $query->where('event_participants_info.batch', '=', $userSscBatch);
             }
             $query->when(($request->status), function($query) use($request)  {
-                $query->where('approvedStatus', $request->status);
+                $query->where('approved_status', $request->status);
             });
             $query->when(($request->gender), function($query) use($request)  {
                 $query->where('gender', $request->gender);

@@ -45,6 +45,14 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-sm-3">
+                                        <select  id="registrationStatus" class="form-control">
+                                            <option value="">All Participant</option>
+                                            <option value="2">Waiting for Approved</option>
+                                            <option value="4">Approved</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
                                         <select name="sscBatchSearch" id="sscBatchSearch" class="form-control">
                                             <option value="">Select One</option>
                                             @if(!empty($userType) && $userType==7 )
@@ -76,6 +84,7 @@
                                             @endif
                                         </select>
                                     </div>
+
 
                                 </div>
                             </div>
@@ -263,9 +272,10 @@
                     method: "get",
                     data: function (d) {
                         (
-                            d.sscBatchSearch    = $("#sscBatchSearch").val(),
-                            d.gender    = $("#genderSearch").val(),
-                            d.currentProfessionSearch    = $("#currentProfessionSearch").val()
+                            d.sscBatchSearch            = $("#sscBatchSearch").val(),
+                            d.gender                    = $("#genderSearch").val(),
+                            d.currentProfessionSearch   = $("#currentProfessionSearch").val(),
+                            d.status                    = $("#registrationStatus").val()
                         )
                     }
                 },
@@ -284,7 +294,7 @@
                 "responsive": true,
             });
         });
-        $("#sscBatchSearch,#genderSearch,#currentProfessionSearch").change(function () {
+        $("#sscBatchSearch,#genderSearch,#currentProfessionSearch,#registrationStatus").change(function () {
             table.draw();
         });
         $(document).on('click', '.deleteData', function () {
