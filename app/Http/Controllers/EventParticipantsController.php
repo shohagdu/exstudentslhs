@@ -414,7 +414,7 @@ class EventParticipantsController extends Controller
                 ];
 
                 EventParticipantsModel::where('id',$request->id)->update($deleteDataInfo);
-                SmsHistory::create($smsHistory);
+               // SmsHistory::create($smsHistory);
                 DB::commit();
                 $redirectTo = route('participantsRecord');
                 $response = ['success' => "This Applicant Confirmed to Join with Us", 'redirectTo' => $redirectTo];
