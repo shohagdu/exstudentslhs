@@ -87,6 +87,9 @@
                     $iDate                  = 1;
                     $totalAmountDate        = 0;
                     $iBestBatch             = 1;
+
+                    $iExpense               = 1;
+                    $totalExpenseAmount     = 0;
                 @endphp
                 @if(!empty($userType) && ($userType==1 || $userType==2))
                     <div class="card">
@@ -217,6 +220,65 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-lg-6 col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    Total Expense Overview
+                                </h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 10%">S/N</th>
+                                        <th>Expense Category</th>
+                                        <th class="text-right">Expense Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    @if(!empty($expenseInfo))
+                                        @foreach($expenseInfo as $expense)
+                                            @php($totalExpenseAmount += $expense->expenseAmount)
+
+                                            <tr>
+                                                <td>{{ $iExpense++ }}</td>
+                                                <td>{{ (!empty($expense->title)?$expense->title:'')
+                                                    }}</td>
+                                                <th  class="text-right">{{ (!empty($expense->expenseAmount)
+                                                    ?number_format($expense->expenseAmount,2):'0.00')
+                                                    }}</th>
+
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <th class="text-center" colspan="2">Total Expense Amount</th>
+                                        <th class="text-right" >{{ (!empty($totalExpenseAmount)?number_format($totalExpenseAmount,2):'0
+                                            .00') }}</th>
+
+                                    </tr>
+                                    </tfoot>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
 
                     <div class="col-lg-6 col-12">
                         <div class="card">

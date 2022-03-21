@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\DonarInfo;
 use App\Models\EventParticipantsModel;
+use App\Models\TransactionModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -53,10 +54,10 @@ class DashboardController extends Controller
         $dateWise           =   '';
         $participantYear    =   '';
         $batchWiseBestAmount=   '';
+        $expenseInfo=   '';
 
 
         if($userType==1 || $userType==2 ) {
-
             $coOrdinatorWiseCurrentApprovdAmnt = DonarInfo:: where(['donarinfos.isActive' => 1])
                 ->join('users', function ($join) {
                     $join->on('users.id', '=', 'donarinfos.sendNumber');
@@ -97,6 +98,15 @@ class DashboardController extends Controller
                 ->groupBy(DB::raw('batch'))->orderBy('batch','ASC')
                 ->get();
 
+            $expenseInfo = TransactionModel::selectRaw('expense_ctg, SUM(credit_amount) AS expenseAmount,all_settings.title')
+                ->leftJoin('all_settings', function($join) {
+                $join->on('all_settings.id', '=', 'transaction_info.expense_ctg');
+                })
+                ->whereNotNull('credit_amount')
+                ->where('transaction_info.type',3)
+                ->where('approved_status',2)
+                ->where('transaction_info.is_active',1)
+                ->groupBy('expense_ctg')->get();
         }
 
 
@@ -116,7 +126,9 @@ class DashboardController extends Controller
         $totalParticpantApproved=$participantApproved->count('*');
 
 
-        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear','totalParticpantApproved','batchWiseBestAmount'));
+
+
+        return view('admin.dashboard',compact('approvedAmount','pendingAmount','coOrdinatorWiseCurrentApprovdAmnt','batchWise','dateWise','userType','totalParticpant','participantYear','totalParticpantApproved','batchWiseBestAmount','expenseInfo'));
 
     }
 }
