@@ -182,7 +182,7 @@
 
                                     @if(!empty($batchWise))
                                         @foreach($batchWise as $batch)
-                                            @php($totalAmountBatch += $batch->ApprovedAmnt)
+                                            @php($totalAmount += $batch->ApprovedAmnt)
                                             @php($totalApprovedParticipatent += $batch->ApprovedParticipatent)
                                             <tr>
                                                 <td>{{ $iBatch++ }}</td>
@@ -206,7 +206,7 @@
                                         <th class="text-center" >{{ (!empty($totalApprovedParticipatent)
                                         ?$totalApprovedParticipatent:'0
                                             ') }}</th>
-                                        <th class="text-right" >{{ (!empty($totalAmountBatch)?number_format($totalAmountBatch,2):'0
+                                        <th class="text-right" >{{ (!empty($totalAmount)?number_format($totalAmount,2):'0
                                             .00') }}</th>
 
                                     </tr>
