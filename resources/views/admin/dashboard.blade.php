@@ -75,6 +75,7 @@
 
                 @php
                     $i                              = 1;
+                    $totalAmountCordinator          = 0;
                     $totalAmount                    = 0;
                     $pendingAmount                  = 0;
                     $totalApprovedParticipatent     = 0;
@@ -118,7 +119,7 @@
 
                                     @if(!empty($coOrdinatorWiseCurrentApprovdAmnt))
                                         @foreach($coOrdinatorWiseCurrentApprovdAmnt as $coOrdinatorInfo)
-                                            @php($totalAmount+=$coOrdinatorInfo->ApprovedAmnt)
+                                            @php($totalAmountCordinator+=$coOrdinatorInfo->ApprovedAmnt)
                                             @php($pendingAmount+=$coOrdinatorInfo->pendingAmnt)
                                             <tr>
                                                 <td>{{ $i++ }}</td>
@@ -141,7 +142,7 @@
                                 <tfoot>
                                     <tr>
                                         <th class="text-center" colspan="3">Total Collection Amount</th>
-                                        <th class="text-right" >{{ (!empty($totalAmount)?number_format($totalAmount,2):'0
+                                        <th class="text-right" >{{ (!empty($totalAmountCordinator)?number_format($totalAmountCordinator,2):'0
                                         .00') }}</th>
                                         <th class="text-right" >{{ (!empty($pendingAmount)?number_format($pendingAmount,2):'0
                                         .00') }}</th>
@@ -329,7 +330,7 @@
                                     <tfoot>
                                     <tr>
                                         <th class="text-center" colspan="2">Total  Amount</th>
-                                        <th class="text-right" >{{ (!empty($totalAmountBatch)?number_format($totalAmountBatch,2):'0
+                                        <th class="text-right" >{{ (!empty($totalAmountDate)?number_format($totalAmountDate,2):'0
                                             .00') }}</th>
                                     </tr>
                                     </tfoot>
