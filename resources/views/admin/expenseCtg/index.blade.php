@@ -35,6 +35,7 @@
                                 <tr>
                                     <th>SL</th>
                                     <th>Title</th>
+                                    <th>View Order</th>
                                     <th>Status</th>
                                     <th style="width: 20%">Action</th>
                                 </tr>
@@ -68,6 +69,7 @@
                 </div>
                 <div class="modal-body">
                     <form  action="" id="expenseCtgForm" class="form-horizontal" method="post">
+
                         <div class="form-group row">
                             <label class="control-label col-sm-4" for="Amount">Expense Category</label>
                             <div class="col-sm-8">
@@ -75,6 +77,13 @@
                                        class="form-control">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="control-label col-sm-4" for="Ordering">Ordering</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="viewOrdering" id="viewOrdering" placeholder="Enter Ordering" class="form-control">
+                            </div>
+                        </div>
+
                         <div class="form-group row">
                             <label class="control-label col-sm-4" for="Amount">Status</label>
                             <div class="col-sm-8">
@@ -143,6 +152,7 @@
                 columns: [
                     {data: 'sl', name: 'sl',class: 'text-left'},
                     {data: 'title', name: 'title',class: 'text-left'},
+                    {data: 'view_order', name: 'view_order',class: 'text-left'},
                     {data: 'is_active', name: 'is_active',class: 'text-left'},
                     {data: 'action', name: 'action', orderable: false, searchable: false,class: 'text-center'},
                 ],
@@ -191,6 +201,7 @@
                         $(".submit_btn").attr("disabled", false);
                         $("#update_id").val(data.id);
                         $("#expenseCtgTtile").val(data.title);
+                        $("#viewOrdering").val(data.view_order);
                         $("#isActive").val(data.is_active);
 
                     } else {

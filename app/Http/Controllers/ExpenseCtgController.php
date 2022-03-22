@@ -39,6 +39,7 @@ class ExpenseCtgController extends Controller
                         $q->orWhere('all_settings.title', 'like', '%'.$searchText.'%');
                     });
                 })
+                ->orderBy('view_order', 'ASC')
                 ->orderBy('id', 'DESC')
                 ->get();
 
@@ -56,6 +57,7 @@ class ExpenseCtgController extends Controller
                         'sl'                    => $sl++,
                         'title'                 => $row->title,
                         'is_active'             => (!empty($row->is_active)?(($row->is_active==1)?"Active":"Inactive"):''),
+                        'view_order'            => (!empty($row->view_order)?$row->view_order:''),
                         'action'                => $btn,
                     ];
                 }
@@ -116,6 +118,7 @@ class ExpenseCtgController extends Controller
                 $data_arr = [
                     'title' => $request->expenseCtgTtile,
                     'type' => 1,
+                    'view_order' => $request->viewOrdering,
                     'is_active' => $request->isActive,
                     'created_at' => date('Y-m-d H:i:s'),
                     'created_by' => Auth::id(),
@@ -137,6 +140,7 @@ class ExpenseCtgController extends Controller
                 $data_arr = [
                     'title' => $request->expenseCtgTtile,
                     'type' => 1,
+                    'view_order' => $request->viewOrdering,
                     'is_active' => $request->isActive,
                     'created_at' => date('Y-m-d H:i:s'),
                     'created_by' => Auth::id(),
