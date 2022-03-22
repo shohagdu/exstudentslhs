@@ -106,7 +106,7 @@ class DashboardController extends Controller
                 ->where('transaction_info.type',3)
                 ->where('approved_status',2)
                 ->where('transaction_info.is_active',1)
-                ->orderBy('view_order','ASC')->groupBy('expense_ctg')->get();
+                ->orderBy('expenseAmount','DESC')->orderBy('view_order','ASC')->groupBy('expense_ctg')->get();
         }
 
 
