@@ -30,6 +30,19 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-sm-4">
+                                    <select  id="expenseCtgSearch"
+                                            class="form-control">
+                                        <option value="">Select Category</option>
+                                        @if(!empty($expenseCtg))
+                                            @foreach($expenseCtg as $key => $val)
+                                                <option value="{{ $key }}">{{ $val }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
                             <table  class="data-table table table-bordered table-hover">
                                 <thead>
                                 <tr>
@@ -193,6 +206,9 @@
                 ajax: {
                     url: base_url + "/expenseRecord",
                     method: "get",
+                    data: function (d) {
+                        (d.expenseCtgSearch        =  $("#expenseCtgSearch").val())
+                    },
                 },
                 columns: [
                     {data: 'sl', name: 'sl',class: 'text-left'},
@@ -207,6 +223,9 @@
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
+            });
+            $("#expenseCtgSearch").change(function () {
+                table.draw();
             });
         });
 

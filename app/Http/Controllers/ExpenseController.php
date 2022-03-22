@@ -40,12 +40,11 @@ class ExpenseController extends Controller
             if(!empty($request->expenseBy)){
                 $query->where('transaction_info.transBy', '=', $request->expenseBy);
             }
-
             $query->when(($request->status), function($query) use($request)  {
                 $query->where('approvedStatus', $request->status);
             });
-            $query->when(($request->expenseCtg), function($query) use($request)  {
-                $query->where('expense_ctg', $request->expenseCtg);
+            $query->when(($request->expenseCtgSearch), function($query) use($request)  {
+                $query->where('expense_ctg', $request->expenseCtgSearch);
             });
 
             $total = $query->count();
